@@ -81,8 +81,8 @@ publishing {
                 "libs/natives/windows32",
                 "libs/natives/windows64",
                 "libs/natives/linux64",
-                "libs/natives/macosx64",
-                "libs/natives/macosxarm64",
+                "libs/natives/macos-x86_64",
+                "libs/natives/macos-aarch64",
             )
             for (nativeFolder in nativesPaths) {
                 if (!nativeFolder.exists())
