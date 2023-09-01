@@ -42,7 +42,7 @@ jobs:
           make -j 8
           make install
       - name: Add SDL2.dll to folder
-        run:
+        run: |
           mkdir -p libs/natives/${{ matrix.name }}
           cp SDL/build/export/bin/SDL2.dll libs/natives/${{ matrix.name }}/SDL2.dll
       - name: Upload artifacts
