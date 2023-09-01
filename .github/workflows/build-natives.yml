@@ -24,7 +24,9 @@ jobs:
           java-version: 17
           distribution: temurin
       - name: Clone SDL2
-        run: ./gradlew cloneSDLRepo
+        run: |
+          chmod +x gradlew
+          ./gradlew cloneSDLRepo
       - name: Get build dependencies
         run: |
           sudo apt-get update
@@ -58,7 +60,9 @@ jobs:
           java-version: 17
           distribution: temurin
       - name: Clone SDL2
-        run: ./gradlew cloneSDLRepo
+        run: |
+          chmod +x gradlew
+          ./gradlew cloneSDLRepo
       - name: Get build dependencies
         run: |
           sudo apt-get update
@@ -94,7 +98,9 @@ jobs:
           java-version: 17
           distribution: temurin
       - name: Clone SDL2
-        run: ./gradlew cloneSDLRepo
+        run: |
+          chmod +x gradlew
+          ./gradlew cloneSDLRepo
       - name: Get build dependencies
         run: |
           brew install ant
