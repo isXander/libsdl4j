@@ -1,9 +1,13 @@
 plugins {
     `java-library`
     `maven-publish`
+    id("net.kyori.blossom") version "1.3.+"
 }
 
-val sdlVersion = "2.28.2"
+val sdlMajorVersion = 2
+val sdlMinorVersion = 28
+val sdlPatchVersion = 2
+val sdlVersion = "$sdlMajorVersion.$sdlMinorVersion.$sdlPatchVersion"
 
 group = "io.github.libsdl4j"
 version = sdlVersion + "-" + (System.getenv("GITHUB_RUN_NUMBER") ?: "local")
@@ -33,6 +37,13 @@ tasks {
     test {
         useJUnitPlatform()
     }
+}
+
+blossom {
+    val versionClass = "src/main/java/io/github/libsdl4j/api/version/SdlVersionConst.java"
+    replaceToken("0/*<majorversion>*/", "$sdlMajorVersion", versionClass)
+    replaceToken("0/*<minorversion>*/", "$sdlMinorVersion", versionClass)
+    replaceToken("0/*<patchversion>*/", "$sdlPatchVersion", versionClass)
 }
 
 tasks.withType<JavaCompile> {

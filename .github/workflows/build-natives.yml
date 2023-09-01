@@ -43,7 +43,8 @@ jobs:
           make install
       - name: Add SDL2.dll to folder
         run:
-          cp SDL/build/export/lib/libSDL2.dll libs/natives/${{ matrix.name }}/SDL2.dll
+          mkdir libs/natives/${{ matrix.name }}
+          cp SDL/build/export/bin/SDL2.dll libs/natives/${{ matrix.name }}/SDL2.dll
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
@@ -80,8 +81,8 @@ jobs:
           make install
       - name: Add SDL2.so to folder
         run: |
-          ls SDL/build/export/lib
-          cp SDL/build/export/lib/libSDL2.so libs/natives/l/SDL2.so
+          mkdir libs/natives/linux64
+          cp SDL/build/export/lib/libSDL2.so libs/natives/linux64/SDL2.so
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
@@ -120,6 +121,8 @@ jobs:
           make install
       - name: Add SDL2.dylib to folder
         run: |
+          mkdir libs/natives/macos-x86_64
+          mkdir libs/natives/macos-aarch64
           ls SDL/build/export/lib
           cp SDL/build/export/lib/libSDL2.dylib libs/natives/macos-x86_64/SDL2.dylib
           cp SDL/build/export/lib/libSDL2.dylib libs/natives/macos-aarch64/SDL2.dylib
