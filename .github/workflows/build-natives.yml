@@ -40,6 +40,7 @@ jobs:
           mkdir export
           ../configure --host=${{ matrix.target }} --prefix "`pwd`/export" --disable-audio --disable-render --disable-filesystem  --enable-hidapi
           make -j 8
+          make install
       - name: Add SDL2.dll to folder
         run:
           cp SDL/build/export/lib/libSDL2.dll libs/natives/${{ matrix.name }}/SDL2.dll
@@ -76,6 +77,7 @@ jobs:
           mkdir export
           ../configure --prefix "`pwd`/export" --disable-audio --disable-render --disable-filesystem  --enable-hidapi
           make -j 8
+          make install
       - name: Add SDL2.so to folder
         run: |
           ls SDL/build/export/lib
@@ -115,6 +117,7 @@ jobs:
           mkdir export
           ../configure --prefix "`pwd`/export" --disable-audio --disable-render --disable-filesystem  --enable-hidapi
           make -j 8
+          make install
       - name: Add SDL2.dylib to folder
         run: |
           ls SDL/build/export/lib
