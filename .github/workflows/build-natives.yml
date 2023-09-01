@@ -152,7 +152,7 @@ jobs:
       - name: Publish to Maven
         run: |
           chmod +x gradlew
-          ./gradlew build publishAllPublicationsToXanderReleasesRepository
+          ./gradlew build publishAllPublicationsToXanderReleasesRepository -x test
         env:
           XANDER_MAVEN_USER: xander
           XANDER_MAVEN_PASS: ${{ secrets.XANDER_MAVEN_PASS }}

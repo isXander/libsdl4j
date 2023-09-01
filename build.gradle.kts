@@ -101,7 +101,7 @@ publishing {
 
                 for (nativeFile in nativeFolder.listFiles() ?: emptyArray()) {
                     artifact(nativeFile) {
-                        classifier = nativeFolder.nameWithoutExtension.substringAfterLast('-')
+                        classifier = nativeFolder.name
                     }
                 }
             }
