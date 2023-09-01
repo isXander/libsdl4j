@@ -156,6 +156,7 @@ jobs:
         env:
           XANDER_MAVEN_USER: xander
           XANDER_MAVEN_PASS: ${{ secrets.XANDER_MAVEN_PASS }}
+          LD_LIBRARY_PATH: ${{ github.workspace }}/libs/natives/linux64
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
