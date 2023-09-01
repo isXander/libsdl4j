@@ -151,6 +151,7 @@ jobs:
           distribution: temurin
       - name: Publish to Maven
         run: |
+          chmod +x gradlew
           ./gradlew build publishAllPublicationsToXanderReleasesRepository
         env:
           XANDER_MAVEN_USER: xander
