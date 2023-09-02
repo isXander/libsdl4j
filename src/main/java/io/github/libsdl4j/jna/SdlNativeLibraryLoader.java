@@ -26,6 +26,13 @@ public final class SdlNativeLibraryLoader {
         Native.register(nativeClass, libSDL2);
     }
 
+    public static void loadLibSDL2FromFilePathNow(String path) {
+        if (libSDL2 != null)
+            throw new IllegalStateException("libSDL2 is already loaded");
+
+        libSDL2 = NativeLibrary.getInstance(path);
+    }
+
     private static NativeLibrary loadLibSDL2() {
         Map<String, Object> options = new HashMap<>();
         options.put(OPTION_STRING_ENCODING, "UTF-8");
