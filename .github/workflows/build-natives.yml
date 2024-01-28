@@ -1,0 +1,164 @@
+name: Build Natives
+
+on:
+  push:
+
+jobs:
+  build-windows:
+    runs-on: ubuntu-22.04
+    name: Build Windows Natives
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include: [
+          { target: x86_64-w64-mingw32, task: "buildWindowsX64Natives", name: "windows64" },
+          { target: i686-w64-mingw32, task: "buildWindowsX86Natives", name: "windows32" }
+        ]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: temurin
+      - name: Clone SDL2
+        run: |
+          chmod +x gradlew
+          ./gradlew cloneSDLRepo
+      - name: Get build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install ant mingw-w64 upx
+      - name: Prepare workspace
+        working-directory: SDL
+        run: mkdir build
+      - name: Build SDL2
+        working-directory: SDL/build
+        run: |
+          mkdir export
+          ../configure --host=${{ matrix.target }} --prefix "`pwd`/export" --disable-audio --disable-render --disable-filesystem  --enable-hidapi
+          make -j 8
+          make install
+      - name: Add SDL2.dll to folder
+        run: |
+          mkdir -p libs/natives/${{ matrix.name }}
+          cp SDL/build/export/bin/SDL2.dll libs/natives/${{ matrix.name }}/SDL2.dll
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: natives
+          path: libs/natives/**
+  build-linux:
+    runs-on: ubuntu-22.04
+    name: Build Linux Natives
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: temurin
+      - name: Clone SDL2
+        run: |
+          chmod +x gradlew
+          ./gradlew cloneSDLRepo
+      - name: Get build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install ant build-essential
+      - name: Prepare workspace
+        working-directory: SDL
+        run: mkdir build
+      - name: Build SDL2 for linux64
+        working-directory: SDL/build
+        run: |
+          mkdir export
+          ../configure --prefix "`pwd`/export" --disable-audio --disable-render --disable-filesystem  --enable-hidapi
+          make -j 8
+          make install
+      - name: Add SDL2.so to folder
+        run: |
+          mkdir -p libs/natives/linux64
+          cp SDL/build/export/lib/libSDL2.so libs/natives/linux64/SDL2.so
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: natives
+          path: libs/natives/**
+
+  build-macos:
+    runs-on: macos-latest
+    name: Build MacOS Natives
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: temurin
+      - name: Clone SDL2
+        run: |
+          chmod +x gradlew
+          ./gradlew cloneSDLRepo
+      - name: Get build dependencies
+        run: |
+          brew install ant
+      - name: Prepare workspace
+        working-directory: SDL
+        run: mkdir build
+      - name: Build SDL2 for mac64
+        working-directory: SDL/build
+        env:
+          CC: ../build-scripts/clang-fat.sh
+        run: |
+          mkdir export
+          ../configure --prefix "`pwd`/export" --disable-audio --disable-render --disable-filesystem  --enable-hidapi
+          make -j 8
+          make install
+      - name: Add SDL2.dylib to folder
+        run: |
+          mkdir -p libs/natives/macos-x86_64
+          mkdir -p libs/natives/macos-aarch64
+          ls SDL/build/export/lib
+          cp SDL/build/export/lib/libSDL2.dylib libs/natives/macos-x86_64/SDL2.dylib
+          cp SDL/build/export/lib/libSDL2.dylib libs/natives/macos-aarch64/SDL2.dylib
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: natives
+          path: libs/natives/**
+
+  publish:
+    runs-on: ubuntu-latest
+    name: Publish Library
+    needs: [build-windows, build-linux, build-macos]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Download built natives
+        uses: actions/download-artifact@v3
+        with:
+          name: natives
+          path: libs/natives
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: temurin
+      - name: Publish to Maven
+        run: |
+          chmod +x gradlew
+          ./gradlew build publishAllPublicationsToXanderReleasesRepository -x test
+        env:
+          XANDER_MAVEN_USER: xander
+          XANDER_MAVEN_PASS: ${{ secrets.XANDER_MAVEN_PASS }}
+          LD_LIBRARY_PATH: ${{ github.workspace }}/libs/natives/linux64
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: java-library
+          path: build/libs/*.jar
