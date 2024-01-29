@@ -126,7 +126,6 @@ jobs:
         run: |
           mkdir -p libs/natives/macos-x86_64
           mkdir -p libs/natives/macos-aarch64
-          ls SDL/build/export/lib
           cp SDL/build/libSDL3.dylib libs/natives/macos-x86_64/SDL3.dylib
           cp SDL/build/libSDL3.dylib libs/natives/macos-aarch64/SDL3.dylib
       - name: Upload artifacts
