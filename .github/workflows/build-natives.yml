@@ -44,7 +44,6 @@ jobs:
         run: |
           cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE=build-scripts/cmake-toolchain-${{ matrix.toolchain }}.cmake -DCMAKE_BUILD_TYPE=Release
           cmake --build build --config Release
-          cmake --install build
       - name: Add SDL3.dll to folder
         run: |
           mkdir -p libs/natives/${{ matrix.name }}
@@ -84,7 +83,6 @@ jobs:
         run: |
           cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
           cmake --build build --config Release
-          cmake --install build
       - name: Add SDL3.so to folder
         run: |
           mkdir -p libs/natives/linux64
@@ -124,7 +122,6 @@ jobs:
         run: |
           cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
           cmake --build build --config Release
-          cmake --install build
       - name: Add SDL3.dylib to folder
         run: |
           mkdir -p libs/natives/macos-x86_64
