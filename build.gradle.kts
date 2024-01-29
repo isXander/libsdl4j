@@ -5,7 +5,7 @@ plugins {
 }
 
 val sdlMajorVersion = 3
-val sdlCommit = "7fbd85a"
+val sdlCommit: String by project
 val sdlVersion = "$sdlMajorVersion.$sdlCommit"
 
 group = "io.github.libsdl4j"
@@ -50,14 +50,6 @@ tasks.withType<JavaCompile> {
 
 tasks.withType<Javadoc> {
     options.encoding = "UTF-8"
-}
-
-val resetGitRepo by tasks.registering(Exec::class) {
-    group = "natives"
-
-    commandLine(
-        "git", "-C", "SDL", "reset", "--hard", sdlCommit,
-    )
 }
 
 publishing {
