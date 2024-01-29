@@ -2,6 +2,8 @@ name: Build Natives
 
 on:
   push:
+    branches:
+      - SDL3
 
 jobs:
   build-windows:
@@ -12,8 +14,8 @@ jobs:
       fail-fast: false
       matrix:
         include: [
-          { target: x86_64-w64-mingw32, task: "buildWindowsX64Natives", name: "windows64" },
-          { target: i686-w64-mingw32, task: "buildWindowsX86Natives", name: "windows32" }
+          { toolchain: mingw64-x86_64, task: "buildWindowsX64Natives", name: "windows64" },
+          { toolchain: mingw64-i686, task: "buildWindowsX86Natives", name: "windows32" }
         ]
 
     steps:
@@ -23,28 +25,29 @@ jobs:
         with:
           java-version: 17
           distribution: temurin
-      - name: Clone SDL2
+      - run: mkdir SDL
+      - name: Clone SDL3
         run: |
-          chmod +x gradlew
-          ./gradlew cloneSDLRepo
+          git init
+          git remote add origin https://github.com/libsdl-org/SDL.git
+          chmod +x ../gradlew
+          ../gradlew fetchSDLVersion
+          git checkout FETCH_HEAD
+        working-directory: SDL
       - name: Get build dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install ant mingw-w64 upx
-      - name: Prepare workspace
+          sudo apt-get install ant mingw-w64 upx cmake
+      - name: Build SDL3
         working-directory: SDL
-        run: mkdir build
-      - name: Build SDL2
-        working-directory: SDL/build
         run: |
-          mkdir export
-          ../configure --host=${{ matrix.target }} --prefix "`pwd`/export" --disable-audio --disable-render --disable-filesystem  --enable-hidapi
-          make -j 8
-          make install
-      - name: Add SDL2.dll to folder
+          cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE=build-scripts/cmake-toolchain-${{ matrix.toolchain }}.cmake -DCMAKE_BUILD_TYPE=Release
+          cmake --build build --config Release
+          cmake --install build
+      - name: Add SDL3.dll to folder
         run: |
           mkdir -p libs/natives/${{ matrix.name }}
-          cp SDL/build/export/bin/SDL2.dll libs/natives/${{ matrix.name }}/SDL2.dll
+          cp SDL/build/SDL3.dll libs/natives/${{ matrix.name }}/SDL3.dll
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
@@ -61,28 +64,31 @@ jobs:
         with:
           java-version: 17
           distribution: temurin
-      - name: Clone SDL2
+      - run: mkdir SDL
+      - name: Clone SDL3
         run: |
-          chmod +x gradlew
-          ./gradlew cloneSDLRepo
+          git init
+          git remote add origin https://github.com/libsdl-org/SDL.git
+          chmod +x ../gradlew
+          ../gradlew fetchSDLVersion
+          git checkout FETCH_HEAD
       - name: Get build dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install ant build-essential
+          sudo apt-get install ant build-essential cmake
       - name: Prepare workspace
         working-directory: SDL
         run: mkdir build
-      - name: Build SDL2 for linux64
+      - name: Build SDL3 for linux64
         working-directory: SDL/build
         run: |
-          mkdir export
-          ../configure --prefix "`pwd`/export" --disable-audio --disable-render --disable-filesystem  --enable-hidapi
-          make -j 8
-          make install
-      - name: Add SDL2.so to folder
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+          cmake --build build --config Release
+          cmake --install build
+      - name: Add SDL3.so to folder
         run: |
           mkdir -p libs/natives/linux64
-          cp SDL/build/export/lib/libSDL2.so libs/natives/linux64/SDL2.so
+          cp SDL/build/libSDL3.so libs/natives/linux64/SDL3.so
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
@@ -100,32 +106,33 @@ jobs:
         with:
           java-version: 17
           distribution: temurin
-      - name: Clone SDL2
+      - run: mkdir SDL
+      - name: Clone SDL3
         run: |
-          chmod +x gradlew
-          ./gradlew cloneSDLRepo
+          git init
+          git remote add origin https://github.com/libsdl-org/SDL.git
+          chmod +x ../gradlew
+          ../gradlew fetchSDLVersion
+          git checkout FETCH_HEAD
       - name: Get build dependencies
         run: |
-          brew install ant
+          brew install ant cmake
       - name: Prepare workspace
         working-directory: SDL
         run: mkdir build
-      - name: Build SDL2 for mac64
+      - name: Build SDL3 for mac64
         working-directory: SDL/build
-        env:
-          CC: ../build-scripts/clang-fat.sh
         run: |
-          mkdir export
-          ../configure --prefix "`pwd`/export" --disable-audio --disable-render --disable-filesystem  --enable-hidapi
-          make -j 8
-          make install
-      - name: Add SDL2.dylib to folder
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+          cmake --build build --config Release
+          cmake --install build
+      - name: Add SDL3.dylib to folder
         run: |
           mkdir -p libs/natives/macos-x86_64
           mkdir -p libs/natives/macos-aarch64
           ls SDL/build/export/lib
-          cp SDL/build/export/lib/libSDL2.dylib libs/natives/macos-x86_64/SDL2.dylib
-          cp SDL/build/export/lib/libSDL2.dylib libs/natives/macos-aarch64/SDL2.dylib
+          cp SDL/build/export/lib/libSDL3.dylib libs/natives/macos-x86_64/SDL3.dylib
+          cp SDL/build/export/lib/libSDL3.dylib libs/natives/macos-aarch64/SDL3.dylib
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:

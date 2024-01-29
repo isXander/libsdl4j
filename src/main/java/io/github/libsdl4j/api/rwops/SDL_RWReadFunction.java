@@ -24,6 +24,5 @@ public interface SDL_RWReadFunction extends Callback {
     size_t read(
             SDL_RWops context,
             Pointer ptr,
-            size_t itemSize,
-            size_t maxnum);
+            size_t size);
 }

@@ -5,7 +5,7 @@ plugins {
 }
 
 val sdlMajorVersion = 3
-val sdlCommit = "9f7eb6c4c11b445da0fcadb357e1c7ed053b0084"
+val sdlCommit = "7fbd85a"
 val sdlVersion = "$sdlMajorVersion.$sdlCommit"
 
 group = "io.github.libsdl4j"
@@ -52,11 +52,11 @@ tasks.withType<Javadoc> {
     options.encoding = "UTF-8"
 }
 
-val fetchSDLVersion by tasks.registering(Exec::class) {
+val resetGitRepo by tasks.registering(Exec::class) {
     group = "natives"
 
     commandLine(
-        "git", "fetch", "--depth", "1", "origin", sdlCommit,
+        "git", "-C", "SDL", "reset", "--hard", sdlCommit,
     )
 }
 

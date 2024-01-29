@@ -1,9 +1,11 @@
 package io.github.libsdl4j.api.gamepad;
 
+import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.ByteByReference;
 import com.sun.jna.ptr.FloatByReference;
 import com.sun.jna.ptr.IntByReference;
+import com.sun.jna.ptr.PointerByReference;
 import io.github.libsdl4j.api.joystick.SDL_Joystick;
 import io.github.libsdl4j.api.joystick.SDL_JoystickGUID;
 import io.github.libsdl4j.api.joystick.SDL_JoystickID;
@@ -42,7 +44,22 @@ public final class SdlGamepad {
 
     public static native int SDL_SetGamepadMapping(SDL_JoystickID instance_id, String mapping);
 
-    public static native SDL_JoystickID SDL_GetGamepads(IntByReference count);
+    public static SDL_JoystickID[] SDL_GetGamepads() {
+        IntByReference count = new IntByReference();
+        Pointer p = InternalNativeFunctions.SDL_GetGamepads(count);
+
+        if (p == null) {
+            return new SDL_JoystickID[0];
+        }
+
+        SDL_JoystickID[] gamepads = new SDL_JoystickID[count.getValue()];
+
+        for (int i = 0; i < gamepads.length; i++) {
+            gamepads[i] = new SDL_JoystickID(p.getNativeLong((long) i * Native.getNativeSize(SDL_JoystickID.class)).longValue());
+        }
+
+        return gamepads;
+    }
 
     public static native boolean SDL_IsGamepad(SDL_JoystickID instance_id);
 
@@ -113,7 +130,7 @@ public final class SdlGamepad {
 
     public static native void SDL_SetGamepadEventsEnabled(boolean enabled);
 
-    public static native boolean SDL_GamepadEventEnabled();
+    public static native boolean SDL_GamepadEventsEnabled();
 
     public static native SDL_GamepadBinding SDL_GetGamepadBindings(SDL_Gamepad gamepad, IntByReference count);
 
@@ -129,9 +146,9 @@ public final class SdlGamepad {
 
     public static native String SDL_GetGamepadStringForAxis(@MagicConstant(valuesFromClass = SDL_GamepadAxis.class) int axis);
 
-    public static native boolean SDL_GamepadHasAxis(SDL_Gamepad gamepad, @MagicConstant(valuesFromClass = SDL_GamepadAxis.class) SDL_GamepadAxis axis);
+    public static native boolean SDL_GamepadHasAxis(SDL_Gamepad gamepad, @MagicConstant(valuesFromClass = SDL_GamepadAxis.class) int axis);
 
-    public static native short SDL_GetGamepadAxis(SDL_Gamepad gamepad, @MagicConstant(valuesFromClass = SDL_GamepadAxis.class) SDL_GamepadAxis axis);
+    public static native short SDL_GetGamepadAxis(SDL_Gamepad gamepad, @MagicConstant(valuesFromClass = SDL_GamepadAxis.class) int axis);
 
     @MagicConstant(valuesFromClass = SDL_GamepadButton.class)
     public static native int SDL_GetGamepadButtonFromString(String str);
@@ -177,4 +194,15 @@ public final class SdlGamepad {
     public static native String SDL_GetGamepadAppleSFSymbolsNameForButton(SDL_Gamepad gamepad, @MagicConstant(valuesFromClass = SDL_GamepadButton.class) int button);
 
     public static native String SDL_GetGamepadAppleSFSymbolsNameForAxis(SDL_Gamepad gamepad, @MagicConstant(valuesFromClass = SDL_GamepadAxis.class) int axis);
+
+    private static final class InternalNativeFunctions {
+        static {
+            SdlNativeLibraryLoader.registerNativeMethods(InternalNativeFunctions.class);
+        }
+
+        private InternalNativeFunctions() {
+        }
+
+        public static native Pointer SDL_GetGamepads(IntByReference count);
+    }
 }

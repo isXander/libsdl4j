@@ -1,7 +1,7 @@
 LibSDL4J
 ========
 
-LibSDL4J is a mapping of SDL2 APIs to Java. There are two goals for LibSDL4J:
+LibSDL4J is a mapping of SDL3 APIs to Java. There are two goals for LibSDL4J:
 
 * Provide as direct of a mapping of SDL APIs as possible.<br/>
   It should be easy to just 1:1 translate C-style source code to Java.
@@ -73,7 +73,7 @@ public class Demo {
         }
 
         // Create and init the window
-        SDL_Window window = SDL_CreateWindow("Demo SDL2", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1024, 768, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+        SDL_Window window = SDL_CreateWindow("Demo SDL3", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1024, 768, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
         if (window == null) {
             throw new IllegalStateException("Unable to create SDL window: " + SDL_GetError());
         }
@@ -178,12 +178,12 @@ However, for the sake of efficiency, there are sometimes overloaded methods pres
 
 
 
-## SDL2.Dll / libSDL2.so loading
+## SDL3.Dll / libSDL3.so loading
 
-The Java bindings will lookup the SDL2 dynamic library in the following locations
+The Java bindings will lookup the SDL3 dynamic library in the following locations
 in order of precedence (algorithm built into `NativeLibrary.loadLibrary()`):
 
-1. Any custom paths set by calling: `NativeLibrary.addSearchPath("SDL2", CUSTOM_PATHS)`.
+1. Any custom paths set by calling: `NativeLibrary.addSearchPath("SDL3", CUSTOM_PATHS)`.
 2. Java Web Start (if used).
 3. Any custom paths set to `jna.library.path` system property
    (`System.setProperty("jna.library.path", "CUSTOM_PATHS");` in the Java code
@@ -205,9 +205,9 @@ the minimum threshold level will become `INFO`, and thus will likely be logged b
 
 
 
-### Embedded SDL2 libraries for Windows and Linux
+### Embedded SDL3 libraries for Windows and Linux
 
-Windows DLLs are the official ones from SDL2 distribution.
+Windows DLLs are the official ones from SDL3 distribution.
 
 Linux .so are compiled on Ubuntu 2016 LTS (to use reasonably old glibc)
 for x86 and x86-64
@@ -215,14 +215,14 @@ and on Raspberry Pi 4 for armhf and aarch64 (Raspberry Pi OS, version *buster*).
 The compilation went on a newly installed and updated OS
 (`sudo apt-get update`, `sudo apt-get upgrade`)
 with all recommended build dependencies installed
-(see SDL2's [README-linux.md](https://github.com/libsdl-org/SDL/blob/main/docs/README-linux.md#user-content-build-dependencies))
+(see SDL3's [README-linux.md](https://github.com/libsdl-org/SDL/blob/main/docs/README-linux.md#user-content-build-dependencies))
 and with default `./configure` (<https://wiki.libsdl.org/Installation#cb1>).
 
 On Linux, the embedded library might be missing support for a specific library or framework you have on your computer,
-so it is advised to have the libSDL2 installed as a separate package. Watch out for the library version, though.
+so it is advised to have the libSDL3 installed as a separate package. Watch out for the library version, though.
 The embedded libraries should be fine in most cases.
 
-On macOS, it is recommended to distribute the libSDL2 library
+On macOS, it is recommended to distribute the libSDL3 library
 as a framework bundled in your `.app` package.
 
 

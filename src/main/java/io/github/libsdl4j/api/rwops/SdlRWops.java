@@ -40,4 +40,10 @@ public final class SdlRWops {
     // TODO: SDL_RWprintf
 
     // TODO: SDL_RWvprintf
+
+    public static native int SDL_RWclose(SDL_RWops context);
+
+    public static native Pointer SDL_LoadFile_RW(SDL_RWops src, size_t.Ref datasize, boolean freesrc);
+
+    public static native Pointer SDL_LoadFile(String file, size_t.Ref datasize);
 }

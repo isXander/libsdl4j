@@ -33,4 +33,6 @@ public final class SdlStdinc {
 
     public static native void SDL_free(
             Pointer mem);
+
+    public static native int SDL_GetNumAllocations();
 }
