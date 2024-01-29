@@ -25,12 +25,11 @@ jobs:
         with:
           java-version: 17
           distribution: temurin
-      - uses: christian-draeger/read-properties@1.1.1
+      - uses: BrycensRanch/read-properties-action@v1
         id: read-properties
         with:
-          path: gradle.properties
-          properties: |
-            sdlCommit
+          file: gradle.properties
+          property: sdlCommit
       - name: Clone SDL3
         run: |
           git clone https://github.com/libsdl-org/SDL.git --branch main --single-branch SDL
@@ -66,12 +65,11 @@ jobs:
         with:
           java-version: 17
           distribution: temurin
-      - uses: christian-draeger/read-properties@1.1.1
+      - uses: BrycensRanch/read-properties-action@v1
         id: read-properties
         with:
-          path: gradle.properties
-          properties: |
-            sdlCommit
+          file: gradle.properties
+          property: sdlCommit
       - name: Clone SDL3
         run: |
           git clone https://github.com/libsdl-org/SDL.git --branch main --single-branch SDL
@@ -81,11 +79,8 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install ant build-essential cmake
-      - name: Prepare workspace
-        working-directory: SDL
-        run: mkdir build
       - name: Build SDL3 for linux64
-        working-directory: SDL/build
+        working-directory: SDL
         run: |
           cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
           cmake --build build --config Release
@@ -111,12 +106,11 @@ jobs:
         with:
           java-version: 17
           distribution: temurin
-      - uses: christian-draeger/read-properties@1.1.1
+      - uses: BrycensRanch/read-properties-action@v1
         id: read-properties
         with:
-          path: gradle.properties
-          properties: |
-            sdlCommit
+          file: gradle.properties
+          property: sdlCommit
       - name: Clone SDL3
         run: |
           git clone https://github.com/libsdl-org/SDL.git --branch main --single-branch SDL
@@ -125,11 +119,8 @@ jobs:
       - name: Get build dependencies
         run: |
           brew install ant cmake
-      - name: Prepare workspace
-        working-directory: SDL
-        run: mkdir build
       - name: Build SDL3 for mac64
-        working-directory: SDL/build
+        working-directory: SDL
         run: |
           cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
           cmake --build build --config Release
@@ -139,8 +130,8 @@ jobs:
           mkdir -p libs/natives/macos-x86_64
           mkdir -p libs/natives/macos-aarch64
           ls SDL/build/export/lib
-          cp SDL/build/export/lib/libSDL3.dylib libs/natives/macos-x86_64/SDL3.dylib
-          cp SDL/build/export/lib/libSDL3.dylib libs/natives/macos-aarch64/SDL3.dylib
+          cp SDL/build/libSDL3.dylib libs/natives/macos-x86_64/SDL3.dylib
+          cp SDL/build/libSDL3.dylib libs/natives/macos-aarch64/SDL3.dylib
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
