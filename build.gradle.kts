@@ -29,7 +29,7 @@ dependencies {
 
 java {
     withSourcesJar()
-    withJavadocJar()
+//    withJavadocJar()
 }
 
 tasks {
@@ -41,7 +41,7 @@ tasks {
 blossom {
     val versionClass = "src/main/java/io/github/libsdl4j/api/version/SdlVersionConst.java"
     replaceToken("0/*<majorversion>*/", "$sdlMajorVersion", versionClass)
-    replaceToken("0/*<commit>*/", "$sdlCommit", versionClass)
+    replaceToken("\"\"/*<commit>*/", "\"$sdlCommit\"", versionClass)
 }
 
 tasks.withType<JavaCompile> {
@@ -73,7 +73,7 @@ publishing {
         create<MavenPublication>("javaLibrary") {
             artifact(tasks.jar.get())
             artifact(tasks["sourcesJar"])
-            artifact(tasks["javadocJar"])
+//            artifact(tasks["javadocJar"])
 
             groupId = "dev.isxander"
             artifactId = "libsdl4j"
@@ -100,6 +100,7 @@ publishing {
 
             groupId = "dev.isxander"
             artifactId = "libsdl4j-natives"
+            version = sdlVersion
         }
     }
 }
