@@ -179,7 +179,7 @@ public final class SdlGamepad {
 
     public static native float SDL_GetGamepadSensorDataRate(SDL_Gamepad gamepad, @MagicConstant(valuesFromClass = SDL_SensorType.class) int type);
 
-    public static native int SDL_GetGamepadSensorData(SDL_Gamepad gamepad, @MagicConstant(valuesFromClass = SDL_SensorType.class) int type, FloatByReference data, int num_values);
+    public static native int SDL_GetGamepadSensorData(SDL_Gamepad gamepad, @MagicConstant(valuesFromClass = SDL_SensorType.class) int type, Pointer data, int num_values);
 
     public static native int SDL_RumbleGamepad(SDL_Gamepad gamepad, short low_frequency_rumble, short high_frequency_rumble, int duration_ms);
 
