@@ -5,6 +5,11 @@ import io.github.libsdl4j.api.events.SDL_EventType;
 import io.github.libsdl4j.api.joystick.SDL_JoystickID;
 import org.intellij.lang.annotations.MagicConstant;
 
+@Structure.FieldOrder({
+        "type",
+        "timestamp",
+        "which",
+})
 public final class SDL_GamepadDeviceEvent extends Structure {
     @MagicConstant(intValues = {
             SDL_EventType.SDL_EVENT_GAMEPAD_ADDED,
