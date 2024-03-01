@@ -77,7 +77,7 @@ jobs:
       - name: Get build dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install ant build-essential cmake
+          sudo apt-get install ant build-essential cmake libudev-dev
       - name: Build SDL3 for linux64
         working-directory: SDL
         run: |
