@@ -10,8 +10,6 @@ public class SdlHidApiTest {
     public void control() {
         SDL_hid_init();
 
-        SDL_hid_enumerate(0, 0);
-
         SDL_hid_exit();
     }
 }

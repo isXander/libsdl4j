@@ -21,7 +21,7 @@ import org.intellij.lang.annotations.MagicConstant;
         "bus_type",
         "next"
 })
-final class SDL_hid_device_info_raw extends Structure {
+public final class SDL_hid_device_info_raw extends Structure {
     public Pointer path;
     public int vendor_id;
     public int product_id;

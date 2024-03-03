@@ -8,6 +8,6 @@ public class SdlHintsTest {
 
     @Test
     public void control() {
-        SDL_ClearHints();
+        SDL_ResetHints();
     }
 }

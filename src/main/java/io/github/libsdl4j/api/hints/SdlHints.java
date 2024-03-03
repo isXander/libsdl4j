@@ -23,6 +23,4 @@ public final class SdlHints {
     public static native String SDL_GetHint(String name);
 
     public static native boolean SDL_GetHintBoolean(String name, boolean defaultValue);
-
-    public static native void SDL_ClearHints();
 }
