@@ -8,6 +8,7 @@ import org.intellij.lang.annotations.MagicConstant;
 
 @Structure.FieldOrder({
         "type",
+        "reserved",
         "timestamp",
         "which",
 })
@@ -18,8 +19,9 @@ public final class SDL_JoyDeviceEvent extends Structure {
             SDL_EventType.SDL_EVENT_JOYSTICK_UPDATE_COMPLETE,
     })
     public int type;
+    public int reserved;
 
-    public int timestamp;
+    public long timestamp;
 
     public SDL_JoystickID which;
 
