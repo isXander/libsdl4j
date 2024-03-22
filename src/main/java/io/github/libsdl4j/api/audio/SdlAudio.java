@@ -28,28 +28,14 @@ public final class SdlAudio {
         IntByReference count = new IntByReference();
         Pointer pointer = InternalNativeFunctions.SDL_GetAudioOutputDevices(count);
 
-        if (pointer == null) {
-            return new SDL_AudioDeviceID[0];
-        }
-
-        SDL_AudioDeviceID[] deviceIds = new SDL_AudioDeviceID[count.getValue()];
-        pointerToArray(pointer, count, deviceIds, SDL_AudioDeviceID::new, SDL_AudioDeviceID.class);
-
-        return deviceIds;
+        return pointerToDevList(pointer, count);
     }
 
     public static SDL_AudioDeviceID[] SDL_GetAudioCaptureDevices() {
         IntByReference count = new IntByReference();
         Pointer pointer = InternalNativeFunctions.SDL_GetAudioCaptureDevices(count);
 
-        if (pointer == null) {
-            return new SDL_AudioDeviceID[0];
-        }
-
-        SDL_AudioDeviceID[] deviceIds = new SDL_AudioDeviceID[count.getValue()];
-        pointerToArray(pointer, count, deviceIds, SDL_AudioDeviceID::new, SDL_AudioDeviceID.class);
-
-        return deviceIds;
+        return pointerToDevList(pointer, count);
     }
 
     public static native String SDL_GetAudioDeviceName(SDL_AudioDeviceID devid);
@@ -146,10 +132,15 @@ public final class SdlAudio {
 
     public static native int SDL_GetSilenceValueForFormat(SDL_AudioFormat format);
 
-    private static <T> void pointerToArray(Pointer pointer, IntByReference count, T[] target, Function<Long, T> constructor, Class<T> clazz) {
+    private static SDL_AudioDeviceID[] pointerToDevList(Pointer pointer, IntByReference count) {
+        if (pointer == null)
+            return new SDL_AudioDeviceID[0];
+
+        SDL_AudioDeviceID[] devs = new SDL_AudioDeviceID[count.getValue()];
         for (int i = 0; i < count.getValue(); i++) {
-            target[i] = constructor.apply(pointer.getNativeLong((long) i * Native.getNativeSize(clazz)).longValue());
+            devs[i] = new SDL_AudioDeviceID(pointer.getInt(i * 4L));
         }
+        return devs;
     }
 
     private static final class InternalNativeFunctions {
