@@ -5,12 +5,10 @@ import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
+import io.github.libsdl4j.api.iostream.SDL_IOStream;
 import io.github.libsdl4j.api.properties.SDL_PropertiesID;
-import io.github.libsdl4j.api.rwops.SDL_RWops;
 import io.github.libsdl4j.jna.SdlNativeLibraryLoader;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.function.Function;
 
 public final class SdlAudio {
 
@@ -122,7 +120,7 @@ public final class SdlAudio {
 
     public static native int SDL_SetAudioPostmixCallback(SDL_AudioDeviceID devid, SDL_AudioPostmixCallback callback, Pointer userdata);
 
-    public static native int SDL_LoadWAV_RW(SDL_RWops src, boolean freesrc, SDL_AudioSpec spec, PointerByReference audioBuf, IntByReference audioLen);
+    public static native int SDL_LoadWAV_IO(SDL_IOStream src, boolean freesrc, SDL_AudioSpec spec, PointerByReference audioBuf, IntByReference audioLen);
 
     public static native int SDL_LoadWAV(String path, SDL_AudioSpec spec, PointerByReference audioBuf, IntByReference audioLen);
 

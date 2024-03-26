@@ -5,18 +5,18 @@ import com.sun.jna.Pointer;
 import com.sun.jna.ptr.ByteByReference;
 import com.sun.jna.ptr.FloatByReference;
 import com.sun.jna.ptr.IntByReference;
-import com.sun.jna.ptr.PointerByReference;
+import io.github.libsdl4j.api.iostream.SDL_IOStream;
 import io.github.libsdl4j.api.joystick.SDL_Joystick;
 import io.github.libsdl4j.api.joystick.SDL_JoystickGUID;
 import io.github.libsdl4j.api.joystick.SDL_JoystickID;
 import io.github.libsdl4j.api.joystick.SDL_JoystickPowerLevel;
 import io.github.libsdl4j.api.properties.SDL_PropertiesID;
-import io.github.libsdl4j.api.rwops.SDL_RWops;
+import io.github.libsdl4j.api.iostream.SDL_IOStreamInterface;
 import io.github.libsdl4j.api.sensor.SDL_SensorType;
 import io.github.libsdl4j.jna.SdlNativeLibraryLoader;
 import org.intellij.lang.annotations.MagicConstant;
 
-import static io.github.libsdl4j.api.rwops.SdlRWops.SDL_RWFromFile;
+import static io.github.libsdl4j.api.iostream.SdlIOStream.SDL_IOFromFile;
 
 public final class SdlGamepad {
     static {
@@ -28,10 +28,10 @@ public final class SdlGamepad {
 
     public static native int SDL_AddGamepadMapping(String mapping);
 
-    public static native int SDL_AddGamepadMappingsFromRW(SDL_RWops src, boolean freesrc);
+    public static native int SDL_AddGamepadMappingsFromIO(SDL_IOStream src, boolean freesrc);
 
     public static int SDL_AddGamepadMappingsFromFile(String file) {
-        return SDL_AddGamepadMappingsFromRW(SDL_RWFromFile(file, "rb"), true);
+        return SDL_AddGamepadMappingsFromIO(SDL_IOFromFile(file, "rb"), true);
     }
 
     public static native int SDL_ReloadGamepadMappings();

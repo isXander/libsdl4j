@@ -1,7 +1,8 @@
-package io.github.libsdl4j.api.rwops;
+package io.github.libsdl4j.api.iostream;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Pointer;
+import com.sun.jna.ptr.PointerByReference;
 import io.github.libsdl4j.api.SdlTest;
 import io.github.libsdl4j.jna.size_t;
 import org.junit.jupiter.api.AfterEach;
@@ -15,14 +16,14 @@ import static io.github.libsdl4j.api.SdlInit.SDL_Init;
 import static io.github.libsdl4j.api.SdlInit.SDL_Quit;
 import static io.github.libsdl4j.api.SdlSubSystemConst.SDL_INIT_VIDEO;
 import static io.github.libsdl4j.api.error.SdlError.SDL_GetError;
-import static io.github.libsdl4j.api.rwops.SdlRWops.*;
-import static io.github.libsdl4j.api.rwops.SdlRWops.SDL_LoadFile;
+import static io.github.libsdl4j.api.iostream.SdlIOStream.*;
+import static io.github.libsdl4j.api.iostream.SdlIOStream.SDL_LoadFile;
 import static io.github.libsdl4j.api.stdinc.SdlStdinc.SDL_GetNumAllocations;
 import static io.github.libsdl4j.api.stdinc.SdlStdinc.SDL_free;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public final class SdlRWopsTest {
+public final class SdlIOStreamTest {
     @BeforeEach
     public void setUp() {
         SDL_Init(SDL_INIT_VIDEO);
@@ -33,11 +34,11 @@ public final class SdlRWopsTest {
         Path sampleFile = SdlTest.getSampleFile(this, "sample.txt");
         Memory buffer = new Memory(1024L);
 
-        SDL_RWops ops = SDL_RWFromFile(sampleFile.toString(), "rb");
-        assertNotNull(ops, "Opening file " + sampleFile + " failed: " + SDL_GetError());
+        SDL_IOStream stream = SDL_IOFromFile(sampleFile.toString(), "rb");
+
+        assertNotNull(stream, "Opening file " + sampleFile + " failed: " + SDL_GetError());
         try {
-            SDL_RWReadFunction readFunction = ops.read;
-            size_t actualReadCount = readFunction.read(ops, buffer, new size_t(buffer.size()));
+            size_t actualReadCount = SDL_ReadIO(stream, buffer, new size_t(buffer.size()));
 
             assertEquals(Files.size(sampleFile), actualReadCount.longValue());
             long offset = 0L;
@@ -49,7 +50,7 @@ public final class SdlRWopsTest {
             assertEquals('i', (char) (buffer.getByte(offset++)));
             assertEquals('s', (char) (buffer.getByte(offset)));
         } finally {
-            SDL_RWclose(ops);
+            SDL_CloseIO(stream);
         }
     }
 
@@ -57,15 +58,14 @@ public final class SdlRWopsTest {
     public void rwOpsShouldReportCorrectFileSize() throws Exception {
         Path sampleFile = SdlTest.getSampleFile(this, "sample.txt");
 
-        SDL_RWops ops = SDL_RWFromFile(sampleFile.toString(), "rb");
-        assertNotNull(ops, "Opening file " + sampleFile + " failed: " + SDL_GetError());
-        try {
-            SDL_RWSizeFunction readFunction = ops.size;
-            long actualFileSize = readFunction.size(ops);
+        SDL_IOStream stream = SDL_IOFromFile(sampleFile.toString(), "rb");
 
+        assertNotNull(stream, "Opening file " + sampleFile + " failed: " + SDL_GetError());
+        try {
+            long actualFileSize = SDL_GetIOSize(stream);
             assertEquals(Files.size(sampleFile), actualFileSize);
         } finally {
-            SDL_RWclose(ops);
+            SDL_CloseIO(stream);
         }
     }
 
@@ -73,10 +73,13 @@ public final class SdlRWopsTest {
     public void LoadFileUsingRwOpsShouldGiveFileContent() throws Exception {
         Path sampleFile = SdlTest.getSampleFile(this, "sample.txt");
 
-        SDL_RWops ops = SDL_RWFromFile(sampleFile.toString(), "rb");
+        SDL_IOStream stream = SDL_IOFromFile(sampleFile.toString(), "rb");
+        var ops = new SDL_IOStreamInterface.ByReference();
+        SDL_OpenIO(ops, null);
+
         assertNotNull(ops, "Opening file " + sampleFile + " failed: " + SDL_GetError());
         size_t.Ref actualReadCount = new size_t.Ref();
-        Pointer buffer = SDL_LoadFile_RW(ops, actualReadCount, true);
+        Pointer buffer = SDL_LoadFile_IO(stream, actualReadCount, true);
 
         assertEquals(Files.size(sampleFile), actualReadCount.getValue().longValue());
         long offset = 0L;

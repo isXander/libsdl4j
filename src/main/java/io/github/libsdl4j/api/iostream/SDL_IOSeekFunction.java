@@ -1,6 +1,8 @@
-package io.github.libsdl4j.api.rwops;
+package io.github.libsdl4j.api.iostream;
 
 import com.sun.jna.Callback;
+import com.sun.jna.Pointer;
+import com.sun.jna.ptr.PointerByReference;
 import org.intellij.lang.annotations.MagicConstant;
 
 /**
@@ -12,7 +14,7 @@ import org.intellij.lang.annotations.MagicConstant;
  * <p><code>JNA: callback object has been garbage collected</code></p>
  */
 @FunctionalInterface
-public interface SDL_RWSeekFunction extends Callback {
+public interface SDL_IOSeekFunction extends Callback {
 
     /**
      * Seek to {@code offset} relative to {@code whence}, one of stdio's whence values:
@@ -21,7 +23,7 @@ public interface SDL_RWSeekFunction extends Callback {
      * @return the final offset in the data stream, or -1 on error.
      */
     long size(
-            SDL_RWops context,
+            PointerByReference userdata,
             long offset,
-            @MagicConstant(valuesFromClass = SdlRWopsSeekType.class) int whence);
+            @MagicConstant(valuesFromClass = SdlIOSeekType.class) int whence);
 }

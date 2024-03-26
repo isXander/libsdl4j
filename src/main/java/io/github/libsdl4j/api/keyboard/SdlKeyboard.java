@@ -20,8 +20,6 @@ public final class SdlKeyboard {
 
     public static native void SDL_ClearComposition();
 
-    public static native boolean SDL_TextInputShown();
-
     public static native int SDL_SetTextInputRect(SDL_Rect rect);
 
     public static native boolean SDL_HasScreenKeyboardSupport();

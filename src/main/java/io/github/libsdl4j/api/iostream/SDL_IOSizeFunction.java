@@ -1,6 +1,7 @@
-package io.github.libsdl4j.api.rwops;
+package io.github.libsdl4j.api.iostream;
 
 import com.sun.jna.Callback;
+import com.sun.jna.ptr.PointerByReference;
 
 /**
  * <p><b>Warning:</b> It is necessary to keep a reference to the callback object somewhere in your Java program,
@@ -11,11 +12,11 @@ import com.sun.jna.Callback;
  * <p><code>JNA: callback object has been garbage collected</code></p>
  */
 @FunctionalInterface
-public interface SDL_RWSizeFunction extends Callback {
+public interface SDL_IOSizeFunction extends Callback {
 
     /**
      * @return The size of the file in this rwops, or -1 if unknown
      */
     long size(
-            SDL_RWops context);
+            PointerByReference userdata);
 }

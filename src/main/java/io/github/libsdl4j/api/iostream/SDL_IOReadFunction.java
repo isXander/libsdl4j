@@ -1,8 +1,11 @@
-package io.github.libsdl4j.api.rwops;
+package io.github.libsdl4j.api.iostream;
 
 import com.sun.jna.Callback;
 import com.sun.jna.Pointer;
+import com.sun.jna.ptr.IntByReference;
+import com.sun.jna.ptr.PointerByReference;
 import io.github.libsdl4j.jna.size_t;
+import org.intellij.lang.annotations.MagicConstant;
 
 /**
  * <p><b>Warning:</b> It is necessary to keep a reference to the callback object somewhere in your Java program,
@@ -13,7 +16,7 @@ import io.github.libsdl4j.jna.size_t;
  * <p><code>JNA: callback object has been garbage collected</code></p>
  */
 @FunctionalInterface
-public interface SDL_RWReadFunction extends Callback {
+public interface SDL_IOReadFunction extends Callback {
 
     /**
      * Read up to {@code maxnum} objects each of {@code size} from the data
@@ -22,7 +25,8 @@ public interface SDL_RWReadFunction extends Callback {
      * @return the number of objects read, or 0 at error or end of file.
      */
     size_t read(
-            SDL_RWops context,
+            PointerByReference userdata,
             Pointer ptr,
-            size_t size);
+            size_t size,
+            @MagicConstant(valuesFromClass = SDL_IOStatus.class) IntByReference status);
 }
