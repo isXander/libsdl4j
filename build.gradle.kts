@@ -39,7 +39,7 @@ tasks {
 }
 
 blossom {
-    val versionClass = "src/main/java/io/github/libsdl4j/api/version/SdlVersionConst.java"
+    val versionClass = "src/main/java/dev/isxander/sdl3java/api/version/SdlVersionConst.java"
     replaceToken("0/*<majorversion>*/", "$sdlMajorVersion", versionClass)
     replaceToken("\"\"/*<commit>*/", "\"$sdlCommit\"", versionClass)
 }
