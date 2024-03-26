@@ -19,7 +19,7 @@ Use Maven:
 
 ~~~xml
 <dependency>
-    <groupId>io.github.libsdl4j</groupId>
+    <groupId>dev.isxander.sdl3java</groupId>
     <artifactId>libsdl4j</artifactId>
     <version>2.28.1-1.3</version>
 </dependency>
@@ -29,7 +29,7 @@ or Gradle:
 
 ~~~kotlin
 dependencies {
-    implementation("io.github.libsdl4j:libsdl4j:2.28.1-1.3")
+    implementation("dev.isxander.sdl3java:libsdl4j:2.28.1-1.3")
 }
 ~~~
 
@@ -45,23 +45,23 @@ If you have LibSDL4J set up as a dependency of your project,
 you can try to a sample program:
 
 ~~~
-import io.github.libsdl4j.api.event.SDL_Event;
-import io.github.libsdl4j.api.render.SDL_Renderer;
-import io.github.libsdl4j.api.video.SDL_Window;
+import dev.isxander.sdl3java.api.event.SDL_Event;
+import dev.isxander.sdl3java.api.render.SDL_Renderer;
+import dev.isxander.sdl3java.api.video.SDL_Window;
 
-import static io.github.libsdl4j.api.Sdl.SDL_Init;
-import static io.github.libsdl4j.api.Sdl.SDL_Quit;
-import static io.github.libsdl4j.api.SdlSubSystemConst.SDL_INIT_EVERYTHING;
-import static io.github.libsdl4j.api.error.SdlError.SDL_GetError;
-import static io.github.libsdl4j.api.event.SDL_EventType.*;
-import static io.github.libsdl4j.api.event.SdlEvents.SDL_PollEvent;
-import static io.github.libsdl4j.api.keycode.SDL_Keycode.SDLK_SPACE;
-import static io.github.libsdl4j.api.render.SDL_RendererFlags.SDL_RENDERER_ACCELERATED;
-import static io.github.libsdl4j.api.render.SdlRender.*;
-import static io.github.libsdl4j.api.video.SDL_WindowFlags.SDL_WINDOW_RESIZABLE;
-import static io.github.libsdl4j.api.video.SDL_WindowFlags.SDL_WINDOW_SHOWN;
-import static io.github.libsdl4j.api.video.SdlVideo.SDL_CreateWindow;
-import static io.github.libsdl4j.api.video.SdlVideoConst.SDL_WINDOWPOS_CENTERED;
+import static dev.isxander.sdl3java.api.Sdl.SDL_Init;
+import static dev.isxander.sdl3java.api.Sdl.SDL_Quit;
+import static dev.isxander.sdl3java.api.SdlSubSystemConst.SDL_INIT_EVERYTHING;
+import static dev.isxander.sdl3java.api.error.SdlError.SDL_GetError;
+import static dev.isxander.sdl3java.api.event.SDL_EventType.*;
+import static dev.isxander.sdl3java.api.event.SdlEvents.SDL_PollEvent;
+import static dev.isxander.sdl3java.api.keycode.SDL_Keycode.SDLK_SPACE;
+import static dev.isxander.sdl3java.api.render.SDL_RendererFlags.SDL_RENDERER_ACCELERATED;
+import static dev.isxander.sdl3java.api.render.SdlRender.*;
+import static dev.isxander.sdl3java.api.video.SDL_WindowFlags.SDL_WINDOW_RESIZABLE;
+import static dev.isxander.sdl3java.api.video.SDL_WindowFlags.SDL_WINDOW_SHOWN;
+import static dev.isxander.sdl3java.api.video.SdlVideo.SDL_CreateWindow;
+import static dev.isxander.sdl3java.api.video.SdlVideoConst.SDL_WINDOWPOS_CENTERED;
 
 public class Demo {
 

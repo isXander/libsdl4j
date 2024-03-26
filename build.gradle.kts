@@ -8,7 +8,7 @@ val sdlMajorVersion = 3
 val sdlCommit: String by project
 val sdlVersion = "$sdlMajorVersion.$sdlCommit"
 
-group = "io.github.libsdl4j"
+group = "dev.isxander.sdl3java"
 version = sdlVersion + "-" + (System.getenv("GITHUB_RUN_NUMBER") ?: "local")
 
 java.sourceCompatibility = JavaVersion.VERSION_17
