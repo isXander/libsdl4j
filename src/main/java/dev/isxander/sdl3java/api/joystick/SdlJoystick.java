@@ -6,6 +6,8 @@ import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
 import com.sun.jna.ptr.ShortByReference;
+import dev.isxander.sdl3java.api.SDL_bool;
+import dev.isxander.sdl3java.api.power.SDL_PowerState;
 import dev.isxander.sdl3java.api.properties.SDL_PropertiesID;
 import dev.isxander.sdl3java.jna.SdlNativeLibraryLoader;
 import org.intellij.lang.annotations.MagicConstant;
@@ -104,7 +106,8 @@ public final class SdlJoystick {
             ShortByReference version,
             ShortByReference crc16);
 
-    public static native boolean SDL_JoystickConnected(SDL_Joystick joystick);
+    @MagicConstant(valuesFromClass = SDL_bool.class)
+    public static native int SDL_JoystickConnected(SDL_Joystick joystick);
 
     public static native SDL_JoystickID SDL_GetJoystickInstanceID(SDL_Joystick joystick);
 
@@ -116,13 +119,15 @@ public final class SdlJoystick {
 
     public static native void SDL_SetJoystickEventsEnabled(boolean enabled);
 
-    public static native boolean SDL_JoystickEventsEnabled();
+    @MagicConstant(valuesFromClass = SDL_bool.class)
+    public static native int SDL_JoystickEventsEnabled();
 
     public static native void SDL_UpdateJoysticks();
 
     public static native short SDL_GetJoystickAxis(SDL_Joystick joystick, int axis);
 
-    public static native boolean SDL_GetJoystickAxisInitialState(SDL_Joystick joystick, int axis, ShortByReference state);
+    @MagicConstant(valuesFromClass = SDL_bool.class)
+    public static native int SDL_GetJoystickAxisInitialState(SDL_Joystick joystick, int axis, ShortByReference state);
 
     public static native byte SDL_GetJoystickHat(SDL_Joystick joystick, int hat);
 
@@ -136,8 +141,11 @@ public final class SdlJoystick {
 
     public static native void SDL_CloseJoystick(SDL_Joystick joystick);
 
-    @MagicConstant(flagsFromClass = SDL_JoystickPowerLevel.class)
-    public static native int SDL_GetJoystickPowerLevel(SDL_Joystick joystick);
+    @MagicConstant(valuesFromClass = SDL_JoystickConnectionState.class)
+    public static native int SDL_GetJoystickConnectionState(SDL_Joystick joystick);
+
+    @MagicConstant(valuesFromClass = SDL_PowerState.class)
+    public static native int SDL_GetJoystickPowerInfo(SDL_Joystick joystick, IntByReference percent);
 
     private static final class InternalNativeFunctions {
         static {

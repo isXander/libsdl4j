@@ -5,9 +5,11 @@ import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
+import dev.isxander.sdl3java.api.SDL_bool;
 import dev.isxander.sdl3java.api.iostream.SDL_IOStream;
 import dev.isxander.sdl3java.api.properties.SDL_PropertiesID;
 import dev.isxander.sdl3java.jna.SdlNativeLibraryLoader;
+import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.Nullable;
 
 public final class SdlAudio {
@@ -46,7 +48,8 @@ public final class SdlAudio {
 
     public static native int SDL_ResumeAudioDevice(SDL_AudioDeviceID dev);
 
-    public static native boolean SDL_AudioDevicePaused(SDL_AudioDeviceID dev);
+    @MagicConstant(valuesFromClass = SDL_bool.class)
+    public static native int SDL_AudioDevicePaused(SDL_AudioDeviceID dev);
 
     public static native void SDL_CloseAudioDevice(SDL_AudioDeviceID devid);
 
@@ -124,7 +127,7 @@ public final class SdlAudio {
 
     public static native int SDL_LoadWAV(String path, SDL_AudioSpec spec, PointerByReference audioBuf, IntByReference audioLen);
 
-    public static native int SDL_MixAudioFormat(PointerByReference dst, Pointer src, SDL_AudioFormat format, long len, int volume);
+    public static native int SDL_MixAudio(PointerByReference dst, Pointer src, SDL_AudioFormat format, long len, float volume);
 
     public static native int SDL_ConvertAudioSamples(SDL_AudioSpec srcSpec, Pointer srcData, int srcLen, SDL_AudioSpec dstSpec, PointerByReference dstData, IntByReference dstLen);
 

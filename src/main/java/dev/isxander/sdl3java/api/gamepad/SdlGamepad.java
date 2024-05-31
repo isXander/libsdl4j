@@ -5,13 +5,14 @@ import com.sun.jna.Pointer;
 import com.sun.jna.ptr.ByteByReference;
 import com.sun.jna.ptr.FloatByReference;
 import com.sun.jna.ptr.IntByReference;
+import dev.isxander.sdl3java.api.SDL_bool;
 import dev.isxander.sdl3java.api.iostream.SDL_IOStream;
 import dev.isxander.sdl3java.api.joystick.SDL_Joystick;
+import dev.isxander.sdl3java.api.joystick.SDL_JoystickConnectionState;
 import dev.isxander.sdl3java.api.joystick.SDL_JoystickGUID;
 import dev.isxander.sdl3java.api.joystick.SDL_JoystickID;
-import dev.isxander.sdl3java.api.joystick.SDL_JoystickPowerLevel;
+import dev.isxander.sdl3java.api.power.SDL_PowerState;
 import dev.isxander.sdl3java.api.properties.SDL_PropertiesID;
-import dev.isxander.sdl3java.api.iostream.SDL_IOStreamInterface;
 import dev.isxander.sdl3java.api.sensor.SDL_SensorType;
 import dev.isxander.sdl3java.jna.SdlNativeLibraryLoader;
 import org.intellij.lang.annotations.MagicConstant;
@@ -61,7 +62,8 @@ public final class SdlGamepad {
         return gamepads;
     }
 
-    public static native boolean SDL_IsGamepad(SDL_JoystickID instance_id);
+    @MagicConstant(valuesFromClass = SDL_bool.class)
+    public static native int SDL_IsGamepad(SDL_JoystickID instance_id);
 
     public static native String SDL_GetGamepadInstanceName(SDL_JoystickID instance_id);
 
@@ -121,16 +123,21 @@ public final class SdlGamepad {
 
     public static native long SDL_GetGamepadSteamHandle(SDL_Gamepad gamepad);
 
-    @MagicConstant(valuesFromClass = SDL_JoystickPowerLevel.class)
-    public static native int SDL_GetGamepadPowerLevel(SDL_Gamepad gamepad);
+    @MagicConstant(valuesFromClass = SDL_JoystickConnectionState.class)
+    public static native int SDL_GetGamepadConnectionState(SDL_Gamepad gamepad);
 
-    public static native boolean SDL_GamepadConnected(SDL_Gamepad gamepad);
+    @MagicConstant(valuesFromClass = SDL_PowerState.class)
+    public static native int SDL_GetGamepadPowerInfo(SDL_Gamepad gamepad, IntByReference percent);
+
+    @MagicConstant(valuesFromClass = SDL_bool.class)
+    public static native int SDL_GamepadConnected(SDL_Gamepad gamepad);
 
     public static native SDL_Joystick SDL_GetGamepadJoystick(SDL_Gamepad gamepad);
 
     public static native void SDL_SetGamepadEventsEnabled(boolean enabled);
 
-    public static native boolean SDL_GamepadEventsEnabled();
+    @MagicConstant(valuesFromClass = SDL_bool.class)
+    public static native int SDL_GamepadEventsEnabled();
 
     public static native SDL_GamepadBinding SDL_GetGamepadBindings(SDL_Gamepad gamepad, IntByReference count);
 
@@ -146,7 +153,8 @@ public final class SdlGamepad {
 
     public static native String SDL_GetGamepadStringForAxis(@MagicConstant(valuesFromClass = SDL_GamepadAxis.class) int axis);
 
-    public static native boolean SDL_GamepadHasAxis(SDL_Gamepad gamepad, @MagicConstant(valuesFromClass = SDL_GamepadAxis.class) int axis);
+    @MagicConstant(valuesFromClass = SDL_bool.class)
+    public static native int SDL_GamepadHasAxis(SDL_Gamepad gamepad, @MagicConstant(valuesFromClass = SDL_GamepadAxis.class) int axis);
 
     public static native short SDL_GetGamepadAxis(SDL_Gamepad gamepad, @MagicConstant(valuesFromClass = SDL_GamepadAxis.class) int axis);
 
@@ -155,7 +163,8 @@ public final class SdlGamepad {
 
     public static native String SDL_GetGamepadStringForButton(@MagicConstant(valuesFromClass = SDL_GamepadButton.class) int button);
 
-    public static native boolean SDL_GamepadHasButton(SDL_Gamepad gamepad, @MagicConstant(valuesFromClass = SDL_GamepadButton.class) int button);
+    @MagicConstant(valuesFromClass = SDL_bool.class)
+    public static native int SDL_GamepadHasButton(SDL_Gamepad gamepad, @MagicConstant(valuesFromClass = SDL_GamepadButton.class) int button);
 
     public static native byte SDL_GetGamepadButton(SDL_Gamepad gamepad, @MagicConstant(valuesFromClass = SDL_GamepadButton.class) int button);
 
@@ -171,11 +180,13 @@ public final class SdlGamepad {
 
     public static native int SDL_GetGamepadTouchpadFinger(SDL_Gamepad gamepad, int touchpad, int finger, ByteByReference state, FloatByReference x, FloatByReference y, FloatByReference pressure);
 
-    public static native boolean SDL_GamepadHasSensor(SDL_Gamepad gamepad, @MagicConstant(valuesFromClass = SDL_SensorType.class) int type);
+    @MagicConstant(valuesFromClass = SDL_bool.class)
+    public static native int SDL_GamepadHasSensor(SDL_Gamepad gamepad, @MagicConstant(valuesFromClass = SDL_SensorType.class) int type);
 
     public static native int SDL_SetGamepadSensorEnabled(SDL_Gamepad gamepad, @MagicConstant(valuesFromClass = SDL_SensorType.class) int type, boolean enabled);
 
-    public static native boolean SDL_GamepadSensorEnabled(SDL_Gamepad gamepad, @MagicConstant(valuesFromClass = SDL_SensorType.class) int type);
+    @MagicConstant(valuesFromClass = SDL_bool.class)
+    public static native int SDL_GamepadSensorEnabled(SDL_Gamepad gamepad, @MagicConstant(valuesFromClass = SDL_SensorType.class) int type);
 
     public static native float SDL_GetGamepadSensorDataRate(SDL_Gamepad gamepad, @MagicConstant(valuesFromClass = SDL_SensorType.class) int type);
 

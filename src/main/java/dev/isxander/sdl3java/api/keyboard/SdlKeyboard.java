@@ -1,7 +1,9 @@
 package dev.isxander.sdl3java.api.keyboard;
 
+import dev.isxander.sdl3java.api.SDL_bool;
 import dev.isxander.sdl3java.api.rect.SDL_Rect;
 import dev.isxander.sdl3java.jna.SdlNativeLibraryLoader;
+import org.intellij.lang.annotations.MagicConstant;
 
 public final class SdlKeyboard {
 
@@ -14,7 +16,8 @@ public final class SdlKeyboard {
 
     public static native void SDL_StartTextInput();
 
-    public static native boolean SDL_TextInputActive();
+    @MagicConstant(valuesFromClass = SDL_bool.class)
+    public static native int SDL_TextInputActive();
 
     public static native void SDL_StopTextInput();
 
@@ -22,5 +25,6 @@ public final class SdlKeyboard {
 
     public static native int SDL_SetTextInputRect(SDL_Rect rect);
 
-    public static native boolean SDL_HasScreenKeyboardSupport();
+    @MagicConstant(valuesFromClass = SDL_bool.class)
+    public static native int SDL_HasScreenKeyboardSupport();
 }

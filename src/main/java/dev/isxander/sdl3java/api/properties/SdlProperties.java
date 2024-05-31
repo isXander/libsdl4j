@@ -1,6 +1,7 @@
 package dev.isxander.sdl3java.api.properties;
 
 import com.sun.jna.Pointer;
+import dev.isxander.sdl3java.api.SDL_bool;
 import dev.isxander.sdl3java.jna.SdlNativeLibraryLoader;
 import org.intellij.lang.annotations.MagicConstant;
 
@@ -44,7 +45,8 @@ public final class SdlProperties {
 
     public static native float SDL_GetFloatProperty(SDL_PropertiesID props, String name, float defaultValue);
 
-    public static native boolean SDL_GetBooleanProperty(SDL_PropertiesID props, String name, boolean defaultValue);
+    @MagicConstant(valuesFromClass = SDL_bool.class)
+    public static native int SDL_GetBooleanProperty(SDL_PropertiesID props, String name, boolean defaultValue);
 
     public static native int SDL_ClearProperty(SDL_PropertiesID props, String name);
 
