@@ -1,5 +1,6 @@
 package dev.isxander.sdl3java.api.events;
 
+import dev.isxander.sdl3java.api.events.events.SDL_Event;
 import org.junit.jupiter.api.Test;
 
 import static dev.isxander.sdl3java.api.SdlInit.SDL_Init;
@@ -7,6 +8,7 @@ import static dev.isxander.sdl3java.api.SdlInit.SDL_Quit;
 import static dev.isxander.sdl3java.api.events.SDL_EventType.SDL_EVENT_FIRST;
 import static dev.isxander.sdl3java.api.events.SDL_EventType.SDL_EVENT_LAST;
 import static dev.isxander.sdl3java.api.events.SdlEvents.SDL_FlushEvents;
+import static dev.isxander.sdl3java.api.events.SdlEvents.SDL_PollEvent;
 
 public class SdlEventsTest {
 
@@ -15,6 +17,14 @@ public class SdlEventsTest {
         SDL_Init(0);
 
         SDL_FlushEvents(SDL_EVENT_FIRST, SDL_EVENT_LAST);
+
+        SDL_Event event = new SDL_Event();
+        SDL_PollEvent(event);
+        SDL_PollEvent(event);
+        SDL_PollEvent(event);
+        SDL_PollEvent(event);
+        SDL_PollEvent(event);
+        SDL_PollEvent(event);
 
         SDL_Quit();
     }

@@ -17,6 +17,8 @@ public final class SDL_Event extends Union {
 
     public SDL_GamepadDeviceEvent gdevice;
 
+    public byte[] padding = new byte[128];
+
     public SDL_Event() {
     }
 
