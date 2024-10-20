@@ -51,7 +51,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: natives
+          name: natives-${{ matrix.name }}
           path: libs/natives/**
   build-linux:
     runs-on: ubuntu-latest
@@ -100,7 +100,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: natives
+          name: natives-${{ matrix.name }}
           path: libs/natives/**
 
   build-macos:
@@ -141,7 +141,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: natives
+          name: natives-macos-universal
           path: libs/natives/**
 
   publish:
@@ -154,7 +154,8 @@ jobs:
       - name: Download built natives
         uses: actions/download-artifact@v4
         with:
-          name: natives
+          pattern: natives-*
+          merge-multiple: true
           path: libs/natives
       - name: Set up JDK
         uses: actions/setup-java@v4
