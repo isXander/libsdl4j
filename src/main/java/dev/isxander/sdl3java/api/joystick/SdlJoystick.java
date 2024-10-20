@@ -100,7 +100,7 @@ public final class SdlJoystick {
 
     public static native boolean SDL_JoystickConnected(SDL_Joystick joystick);
 
-    public static native SDL_JoystickID SDL_GetJoystickInstanceID(SDL_Joystick joystick);
+    public static native SDL_JoystickID SDL_GetJoystickID(SDL_Joystick joystick);
 
     public static native int SDL_GetNumJoystickAxes(SDL_Joystick joystick);
 
