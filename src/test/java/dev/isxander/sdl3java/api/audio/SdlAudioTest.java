@@ -35,9 +35,9 @@ public class SdlAudioTest {
         PointerByReference audioBuf = new PointerByReference();
         IntByReference audioLen = new IntByReference();
         SDL_AudioSpec.ByReference wavSpec = new SDL_AudioSpec.ByReference();
-        if (SDL_LoadWAV_IO(iostream, true, wavSpec, audioBuf, audioLen) != 0) {
-            System.out.println(SDL_GetError());
-            fail();
+        if (!SDL_LoadWAV_IO(iostream, true, wavSpec, audioBuf, audioLen)) {
+            System.out.println("SDL Error: " + SDL_GetError());
+            fail("Failed to load WAV file");
         }
         SDL_AudioStream stream = SDL_CreateAudioStream(wavSpec, devSpec);
         assertNotNull(stream);
@@ -45,12 +45,12 @@ public class SdlAudioTest {
         controller = SDL_OpenAudioDevice(controller, devSpec);
         assertNotNull(controller);
 
-        if (SDL_BindAudioStream(controller, stream) != 0) {
+        if (!SDL_BindAudioStream(controller, stream)) {
             System.out.println(SDL_GetError());
             fail();
         }
 
-        if (SDL_PutAudioStreamData(stream, audioBuf.getValue(), audioLen.getValue()) != 0) {
+        if (!SDL_PutAudioStreamData(stream, audioBuf.getValue(), audioLen.getValue())) {
             System.out.println(SDL_GetError());
             fail();
         }

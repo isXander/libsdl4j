@@ -4,54 +4,21 @@ import dev.isxander.sdl3java.jna.SdlNativeLibraryLoader;
 import org.intellij.lang.annotations.MagicConstant;
 
 public final class SdlInit {
+    static {
+        SdlNativeLibraryLoader.registerNativeMethods(SdlInit.class);
+    }
 
     private SdlInit() {
     }
 
-    public static int SDL_Init(
-            @MagicConstant(flagsFromClass = SdlSubSystemConst.class) int flags) {
-        return InternalNativeFunctions.SDL_Init(flags);
-    }
+    public static native boolean SDL_Init(@MagicConstant(flagsFromClass = SdlSubSystemConst.class) int flags);
 
-    public static int SDL_InitSubSystem(
-            @MagicConstant(flagsFromClass = SdlSubSystemConst.class) int flags) {
-        return InternalNativeFunctions.SDL_InitSubSystem(flags);
-    }
+    public static native boolean SDL_InitSubSystem(@MagicConstant(flagsFromClass = SdlSubSystemConst.class) int flags);
 
-    public static int SDL_QuitSubSystem(
-            @MagicConstant(flagsFromClass = SdlSubSystemConst.class) int flags) {
-        return InternalNativeFunctions.SDL_QuitSubSystem(flags);
-    }
+    public static native boolean SDL_QuitSubSystem(@MagicConstant(flagsFromClass = SdlSubSystemConst.class) int flags);
 
-    public static int SDL_WasInit(
-            @MagicConstant(flagsFromClass = SdlSubSystemConst.class) int flags) {
-        return InternalNativeFunctions.SDL_WasInit(flags);
-    }
+    @MagicConstant(flagsFromClass = SdlSubSystemConst.class)
+    public static native int SDL_WasInit(@MagicConstant(flagsFromClass = SdlSubSystemConst.class) int flags);
 
-    public static void SDL_Quit() {
-        InternalNativeFunctions.SDL_Quit();
-    }
-
-    private static final class InternalNativeFunctions {
-        static {
-            SdlNativeLibraryLoader.registerNativeMethods(InternalNativeFunctions.class);
-        }
-
-        private InternalNativeFunctions() {
-        }
-
-        public static native int SDL_Init(
-                @MagicConstant(flagsFromClass = SdlSubSystemConst.class) int flags);
-
-        public static native int SDL_InitSubSystem(
-                @MagicConstant(flagsFromClass = SdlSubSystemConst.class) int flags);
-
-        public static native int SDL_QuitSubSystem(
-                @MagicConstant(flagsFromClass = SdlSubSystemConst.class) int flags);
-
-        public static native int SDL_WasInit(
-                @MagicConstant(flagsFromClass = SdlSubSystemConst.class) int flags);
-
-        public static native void SDL_Quit();
-    }
+    public static native void SDL_Quit();
 }

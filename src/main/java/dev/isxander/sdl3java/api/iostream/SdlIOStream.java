@@ -26,7 +26,7 @@ public final class SdlIOStream {
 
     public static native SDL_IOStream SDL_OpenIO(SDL_IOStreamInterface.ByReference iface, Pointer userdata);
 
-    public static native int SDL_CloseIO(SDL_IOStream context);
+    public static native boolean SDL_CloseIO(SDL_IOStream context);
 
     public static native SDL_PropertiesID SDL_GetIOProperties(SDL_IOStream context);
 

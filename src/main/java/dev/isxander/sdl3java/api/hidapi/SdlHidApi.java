@@ -15,6 +15,7 @@ public final class SdlHidApi {
 
     static {
         SdlNativeLibraryLoader.registerNativeMethods(SdlHidApi.class);
+        SdlNativeLibraryLoader.registerNativeMethods(InternalNativeFunctions.class);
     }
 
     private SdlHidApi() {
@@ -152,10 +153,6 @@ public final class SdlHidApi {
     public static native void SDL_hid_ble_scan(boolean active);
 
     private static final class InternalNativeFunctions {
-        static {
-            SdlNativeLibraryLoader.registerNativeMethods(InternalNativeFunctions.class);
-        }
-
         private InternalNativeFunctions() {
         }
 
