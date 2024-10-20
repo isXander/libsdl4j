@@ -20,6 +20,6 @@ public interface SDL_IOCloseFunction extends Callback {
      *
      * @return 0 if successful or -1 on write error when flushing data.
      */
-    int close(
+    boolean close(
             PointerByReference userdata);
 }

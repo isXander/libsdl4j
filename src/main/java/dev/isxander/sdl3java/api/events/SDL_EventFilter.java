@@ -6,5 +6,5 @@ import dev.isxander.sdl3java.api.events.events.SDL_Event;
 
 @FunctionalInterface
 public interface SDL_EventFilter extends Callback {
-    int filterEvent(Pointer userData, SDL_Event event);
+    boolean filterEvent(Pointer userData, SDL_Event event);
 }
