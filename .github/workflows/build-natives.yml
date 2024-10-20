@@ -7,21 +7,21 @@ on:
 
 jobs:
   build-windows:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     name: Build Windows Natives
 
     strategy:
       fail-fast: false
       matrix:
         include: [
-          { toolchain: mingw64-x86_64, task: "buildWindowsX64Natives", name: "windows64" },
-          { toolchain: mingw64-i686, task: "buildWindowsX86Natives", name: "windows32" }
+          { toolchain: mingw64-x86_64, name: "windows-x86_64" },
+          { toolchain: mingw64-i686, name: "windows-x86" }
         ]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up JDK
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: 17
           distribution: temurin
@@ -54,8 +54,18 @@ jobs:
           name: natives
           path: libs/natives/**
   build-linux:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     name: Build Linux Natives
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include: [
+          # Running on x86_64 runner, nothing extra needed
+          { name: "linux-x86_64", packages: "", cmakeargs: "" },
+          # Running on aarch64 runner, need to install gcc-aarch64-linux-gnu toolchain
+          { name: "linux-aarch64", packages: "gcc-aarch64-linux-gnu", cmakeargs: "-DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++" },
+        ]
 
     steps:
       - uses: actions/checkout@v3
@@ -77,16 +87,16 @@ jobs:
       - name: Get build dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install ant build-essential cmake libudev-dev libpulse-dev libpipewire-0.3-dev
+          sudo apt-get install ant build-essential cmake libudev-dev libpulse-dev libpipewire-0.3-dev ${{ matrix.packages }}
       - name: Build SDL3 for linux64
         working-directory: SDL
         run: |
-          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release ${{ matrix.cmakeargs }}
           cmake --build build --config Release
       - name: Add SDL3.so to folder
         run: |
-          mkdir -p libs/natives/linux64
-          cp SDL/build/libSDL3.so libs/natives/linux64/SDL3.so
+          mkdir -p libs/natives/${{ matrix.name }}
+          cp SDL/build/libSDL3.so libs/natives/${{ matrix.name }}/SDL3.so
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
