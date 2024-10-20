@@ -7,7 +7,7 @@ import org.intellij.lang.annotations.MagicConstant;
 
 import static dev.isxander.sdl3java.api.events.SDL_EventType.*;
 
-public final class SDL_Event extends Union {
+public class SDL_Event extends Union {
     @MagicConstant(valuesFromClass = SDL_EventType.class)
     public int type;
 

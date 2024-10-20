@@ -14,6 +14,7 @@ import dev.isxander.sdl3java.api.joystick.SDL_JoystickID;
 import dev.isxander.sdl3java.api.power.SDL_PowerState;
 import dev.isxander.sdl3java.api.properties.SDL_PropertiesID;
 import dev.isxander.sdl3java.api.sensor.SDL_SensorType;
+import dev.isxander.sdl3java.jna.NativeInt;
 import dev.isxander.sdl3java.jna.SdlNativeLibraryLoader;
 import org.intellij.lang.annotations.MagicConstant;
 
@@ -73,11 +74,14 @@ public final class SdlGamepad {
 
     public static native SDL_JoystickGUID SDL_GetGamepadInstanceGUID(SDL_JoystickID instance_id);
 
-    public static native short SDL_GetGamepadInstanceVendor(SDL_JoystickID instance_id);
+    @NativeInt(NativeInt.Type.UINT16)
+    public static native char SDL_GetGamepadInstanceVendor(SDL_JoystickID instance_id);
 
-    public static native short SDL_GetGamepadInstanceProduct(SDL_JoystickID instance_id);
+    @NativeInt(NativeInt.Type.UINT16)
+    public static native char SDL_GetGamepadInstanceProduct(SDL_JoystickID instance_id);
 
-    public static native short SDL_GetGamepadInstanceProductVersion(SDL_JoystickID instance_id);
+    @NativeInt(NativeInt.Type.UINT16)
+    public static native char SDL_GetGamepadInstanceProductVersion(SDL_JoystickID instance_id);
 
     @MagicConstant(valuesFromClass = SDL_GamepadType.class)
     public static native int SDL_GetGamepadInstanceType(SDL_JoystickID instance_id);
@@ -111,13 +115,17 @@ public final class SdlGamepad {
 
     public static native int SDL_SetGamepadPlayerIndex(SDL_Gamepad gamepad, int player_index);
 
-    public static native short SDL_GetGamepadVendor(SDL_Gamepad gamepad);
+    @NativeInt(NativeInt.Type.UINT16)
+    public static native char SDL_GetGamepadVendor(SDL_Gamepad gamepad);
 
-    public static native short SDL_GetGamepadProduct(SDL_Gamepad gamepad);
+    @NativeInt(NativeInt.Type.UINT16)
+    public static native char SDL_GetGamepadProduct(SDL_Gamepad gamepad);
 
-    public static native short SDL_GetGamepadProductVersion(SDL_Gamepad gamepad);
+    @NativeInt(NativeInt.Type.UINT16)
+    public static native char SDL_GetGamepadProductVersion(SDL_Gamepad gamepad);
 
-    public static native short SDL_GetGamepadFirmwareVersion(SDL_Gamepad gamepad);
+    @NativeInt(NativeInt.Type.UINT16)
+    public static native char SDL_GetGamepadFirmwareVersion(SDL_Gamepad gamepad);
 
     public static native String SDL_GetGamepadSerial(SDL_Gamepad gamepad);
 
@@ -192,9 +200,19 @@ public final class SdlGamepad {
 
     public static native int SDL_GetGamepadSensorData(SDL_Gamepad gamepad, @MagicConstant(valuesFromClass = SDL_SensorType.class) int type, Pointer data, int num_values);
 
-    public static native int SDL_RumbleGamepad(SDL_Gamepad gamepad, short low_frequency_rumble, short high_frequency_rumble, int duration_ms);
+    public static native int SDL_RumbleGamepad(
+            SDL_Gamepad gamepad,
+            @NativeInt(NativeInt.Type.UINT16) char low_frequency_rumble,
+            @NativeInt(NativeInt.Type.UINT16) char high_frequency_rumble,
+            @NativeInt(NativeInt.Type.UINT32) long duration_ms
+    );
 
-    public static native int SDL_RumbleGamepadTriggers(SDL_Gamepad gamepad, short left_rumble, short right_rumble, int duration_ms);
+    public static native int SDL_RumbleGamepadTriggers(
+            SDL_Gamepad gamepad,
+            @NativeInt(NativeInt.Type.UINT16) char left_rumble,
+            @NativeInt(NativeInt.Type.UINT16) char right_rumble,
+            @NativeInt(NativeInt.Type.UINT32) long duration_ms
+    );
 
     public static native int SDL_SetGamepadLED(SDL_Gamepad gamepad, byte red, byte green, byte blue);
 
