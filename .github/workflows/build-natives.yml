@@ -44,6 +44,9 @@ jobs:
         run: |
           cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE=build-scripts/cmake-toolchain-${{ matrix.toolchain }}.cmake -DCMAKE_BUILD_TYPE=Release
           cmake --build build --config Release
+      - name: Compress SDL3.dll
+        run: |
+          upx -5 SDL/build/SDL3.dll
       - name: Add SDL3.dll to folder
         run: |
           mkdir -p libs/natives/${{ matrix.name }}
