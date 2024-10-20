@@ -136,10 +136,8 @@ jobs:
           CMAKE_OSX_ARCHITECTURES: 'arm64;x86_64'
       - name: Add SDL3.dylib to folder
         run: |
-          mkdir -p libs/natives/macos-x86_64
-          mkdir -p libs/natives/macos-aarch64
-          cp SDL/build/libSDL3.dylib libs/natives/macos-x86_64/SDL3.dylib
-          cp SDL/build/libSDL3.dylib libs/natives/macos-aarch64/SDL3.dylib
+          mkdir -p libs/natives/macos-universal
+          cp SDL/build/libSDL3.dylib libs/natives/macos-universal/SDL3.dylib
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
