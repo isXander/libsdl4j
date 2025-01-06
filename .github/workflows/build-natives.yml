@@ -44,7 +44,6 @@ jobs:
           
           if [ "$CURRENT_SDL_VERSION" = "$LAST_SDL_VERSION" ]; then
             echo "SDL version not changed since last successful build."
-            echo "::set-output name=sdl_changed::false"
             echo "sdl_changed=false" >> $GITHUB_OUTPUT
           else
             echo "SDL version changed!"
@@ -204,6 +203,9 @@ jobs:
     runs-on: ubuntu-latest
     name: Publish Library
     needs: [build-windows, build-linux, build-macos]
+    if: needs.build-windows.result != 'failure' &&
+        needs.build-linux.result != 'failure' &&
+        needs.build-macos.result != 'failure'
 
     steps:
       - uses: actions/checkout@v4
