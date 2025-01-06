@@ -6,9 +6,56 @@ on:
       - SDL3
 
 jobs:
+  detect-sdl-change:
+    name: Detect if SDL version has changed since last successful job
+    runs-on: ubuntu-latest
+
+    outputs:
+      sdl_changed: ${{ steps.check_sdl.outputs.sdl_changed }}
+
+    steps:
+      - name: Check out main repo
+        uses: actions/checkout@v4
+        with:
+          ref: SDL3
+
+      - name: Read current SDL version
+        uses: BrycensRanch/read-properties-action@v1
+        id: read_current
+        with:
+          file: gradle.properties
+          property: sdlCommit
+
+      - name: Check out ci-data branch
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository }}
+          path: ci-data
+          ref: ci-data
+
+      - name: Compare with last successful version
+        id: check_sdl
+        run: |
+          CURRENT_SDL_VERSION="${{ steps.read_current.outputs.current_sdl_version }}"
+          LAST_SDL_VERSION="$(cat ci-data/last_successful_sdl.txt || echo '0.0.0')"
+          
+          echo "Current: $CURRENT_SDL_VERSION"
+          echo "Last successful: $LAST_SDL_VERSION"
+          
+          if [ "$CURRENT_SDL_VERSION" = "$LAST_SDL_VERSION" ]; then
+            echo "SDL version not changed since last successful build."
+            echo "::set-output name=sdl_changed::false"
+          else
+            echo "SDL version changed!"
+            echo "::set-output name=sdl_changed::true"
+          fi
+
   build-windows:
     runs-on: ubuntu-latest
     name: Build Windows Natives
+
+    needs: [ detect-sdl-change ]
+    if: ${{ needs.detect-sdl-change.outputs.sdl_changed == 'true' }}
 
     strategy:
       fail-fast: false
@@ -60,6 +107,9 @@ jobs:
     runs-on: ubuntu-latest
     name: Build Linux Natives
 
+    needs: [ detect-sdl-change ]
+    if: ${{ needs.detect-sdl-change.outputs.sdl_changed == 'true' }}
+
     strategy:
       fail-fast: false
       matrix:
@@ -105,10 +155,12 @@ jobs:
         with:
           name: natives-${{ matrix.name }}
           path: libs/natives/**
-
   build-macos:
     runs-on: macos-latest
     name: Build MacOS Natives
+
+    needs: [ detect-sdl-change ]
+    if: ${{ needs.detect-sdl-change.outputs.sdl_changed == 'true' }}
 
     steps:
       - uses: actions/checkout@v4
@@ -154,27 +206,54 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - name: Download built natives
-        uses: actions/download-artifact@v4
-        with:
-          pattern: natives-*
-          merge-multiple: true
-          path: libs/natives
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
           java-version: 17
           distribution: temurin
-      - name: Publish to Maven
+
+      # Publish Java Library if SDL version has not changed or all native builds are successful
+      - name: Publish Java Library to Maven
+        if: needs.detect-sdl-change.outputs.sdl_changed == 'false' ||
+          (needs.build-windows.result == 'success' &&
+          needs.build-linux.result == 'success' &&
+          needs.build-macos.result == 'success')
         run: |
           chmod +x gradlew
-          ./gradlew build publishAllPublicationsToXanderReleasesRepository -x test
+          ./gradlew publishJavaLibraryPublicationToXanderReleasesRepository
         env:
           XANDER_MAVEN_USER: xander
           XANDER_MAVEN_PASS: ${{ secrets.XANDER_MAVEN_PASS }}
-          LD_LIBRARY_PATH: ${{ github.workspace }}/libs/natives/linux64
       - name: Upload artifacts
+        if: needs.detect-sdl-change.outputs.sdl_changed == 'false' ||
+          (needs.build-windows.result == 'success' &&
+          needs.build-linux.result == 'success' &&
+          needs.build-macos.result == 'success')
         uses: actions/upload-artifact@v4
         with:
           name: java-library
           path: build/libs/*.jar
+
+      # Publish natives if SDL version has changed and all native builds are successful
+      - name: Download built natives
+        if: needs.detect-sdl-change.outputs.sdl_changed == 'true' &&
+          needs.build-windows.result == 'success' &&
+          needs.build-linux.result == 'success' &&
+          needs.build-macos.result == 'success'
+        uses: actions/download-artifact@v4
+        with:
+          pattern: natives-*
+          merge-multiple: true
+          path: libs/natives
+      - name: Publish Natives to Maven
+        if: needs.detect-sdl-change.outputs.sdl_changed == 'true' &&
+          needs.build-windows.result == 'success' &&
+          needs.build-linux.result == 'success' &&
+          needs.build-macos.result == 'success'
+        run: |
+          chmod +x gradlew
+          ./gradlew publishNativesPublicationToXanderReleasesRepository
+        env:
+          XANDER_MAVEN_USER: xander
+          XANDER_MAVEN_PASS: ${{ secrets.XANDER_MAVEN_PASS }}
+
