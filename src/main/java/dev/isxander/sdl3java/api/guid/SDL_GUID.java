@@ -21,24 +21,17 @@ import java.util.UUID;
  * different GUIDs on different operating systems).</p>
  */
 @Structure.FieldOrder({
-        "leastSigBits",
-        "mostSigBits"
+        "data",
 })
 public class SDL_GUID extends Structure implements Structure.ByValue {
 
-    public long leastSigBits;
-    public long mostSigBits;
+    public byte[] data = new byte[16];
 
     public SDL_GUID() {
     }
 
     public SDL_GUID(Pointer p) {
         super(p);
-    }
-
-    @Override
-    public String toString() {
-        return new UUID(mostSigBits, leastSigBits).toString();
     }
 
 }
