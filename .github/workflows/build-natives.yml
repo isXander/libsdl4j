@@ -310,4 +310,5 @@ jobs:
           git add last_successful_sdl.txt
           git commit -m "Update last successful SDL version to ${{ steps.read_properties.outputs.sdlCommit }} from job ${{ github.run_number }} [skip ci]"
           git push origin ci-data
+        working-directory: ci-data
 
