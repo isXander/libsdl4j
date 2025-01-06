@@ -55,7 +55,6 @@ jobs:
     name: Build Windows Natives
 
     needs: [ detect-sdl-change ]
-    if: ${{ needs.detect-sdl-change.outputs.sdl_changed == 'true' }}
 
     strategy:
       fail-fast: false
@@ -66,6 +65,11 @@ jobs:
         ]
 
     steps:
+      # Exit early with code 0 to show success if no changes
+      - name: Exit early if no changes
+        if: ${{ needs.detect-sdl-change.outputs.sdl_changed == 'false' }}
+        run: exit 0
+
       - uses: actions/checkout@v4
       - name: Set up JDK
         uses: actions/setup-java@v4
@@ -108,7 +112,6 @@ jobs:
     name: Build Linux Natives
 
     needs: [ detect-sdl-change ]
-    if: ${{ needs.detect-sdl-change.outputs.sdl_changed == 'true' }}
 
     strategy:
       fail-fast: false
@@ -121,6 +124,11 @@ jobs:
         ]
 
     steps:
+      # Exit early with code 0 to show success if no changes
+      - name: Exit early if no changes
+        if: ${{ needs.detect-sdl-change.outputs.sdl_changed == 'false' }}
+        run: exit 0
+
       - uses: actions/checkout@v4
       - name: Set up JDK
         uses: actions/setup-java@v4
@@ -160,9 +168,13 @@ jobs:
     name: Build MacOS Natives
 
     needs: [ detect-sdl-change ]
-    if: ${{ needs.detect-sdl-change.outputs.sdl_changed == 'true' }}
 
     steps:
+      # Exit early with code 0 to show success if no changes
+      - name: Exit early if no changes
+        if: ${{ needs.detect-sdl-change.outputs.sdl_changed == 'false' }}
+        run: exit 0
+
       - uses: actions/checkout@v4
       - name: Set up JDK
         uses: actions/setup-java@v4
@@ -203,9 +215,6 @@ jobs:
     runs-on: ubuntu-latest
     name: Publish Library
     needs: [build-windows, build-linux, build-macos]
-    if: needs.build-windows.result != 'failure' &&
-        needs.build-linux.result != 'failure' &&
-        needs.build-macos.result != 'failure'
 
     steps:
       - uses: actions/checkout@v4
