@@ -36,7 +36,7 @@ jobs:
       - name: Compare with last successful version
         id: check_sdl
         run: |
-          CURRENT_SDL_VERSION="${{ steps.read_current.outputs.current_sdl_version }}"
+          CURRENT_SDL_VERSION="${{ steps.read_current.outputs.sdlCommit }}"
           LAST_SDL_VERSION="$(cat ci-data/last_successful_sdl.txt || echo '0.0.0')"
           
           echo "Current: $CURRENT_SDL_VERSION"
@@ -45,9 +45,10 @@ jobs:
           if [ "$CURRENT_SDL_VERSION" = "$LAST_SDL_VERSION" ]; then
             echo "SDL version not changed since last successful build."
             echo "::set-output name=sdl_changed::false"
+            echo "sdl_changed=false" >> $GITHUB_OUTPUT
           else
             echo "SDL version changed!"
-            echo "::set-output name=sdl_changed::true"
+            echo "sdl_changed=true" >> $GITHUB_OUTPUT
           fi
 
   build-windows:
@@ -181,7 +182,7 @@ jobs:
           git reset --hard ${{ steps.read-properties.outputs.sdlCommit }}
       - name: Get build dependencies
         run: |
-          brew install ant cmake
+          brew install --formula --quiet cmake
       - name: Build SDL3 for mac64
         working-directory: SDL
         run: |
@@ -271,7 +272,7 @@ jobs:
           path: ci-data
       - name: Save last successful SDL version
         run: |
-          echo ${{ steps.read_properties.outputs.sdlCommit }} > ci-data/last_successful_sdl.txt
+          echo ${{ steps.read_properties.outputs.sdlCommit }} > last_successful_sdl.txt
         working-directory: ci-data
       - name: Commit and push last successful SDL version
         run: |
