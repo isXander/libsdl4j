@@ -257,3 +257,27 @@ jobs:
           XANDER_MAVEN_USER: xander
           XANDER_MAVEN_PASS: ${{ secrets.XANDER_MAVEN_PASS }}
 
+      - name: Get SDL version
+        uses: BrycensRanch/read-properties-action@v1
+        id: read_properties
+        with:
+          file: gradle.properties
+          property: sdlCommit
+      - name: Checkout ci-data branch
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository }}
+          ref: ci-data
+          path: ci-data
+      - name: Save last successful SDL version
+        run: |
+          echo ${{ steps.read_properties.outputs.sdlCommit }} > ci-data/last_successful_sdl.txt
+        working-directory: ci-data
+      - name: Commit and push last successful SDL version
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add last_successful_sdl.txt
+          git commit -m "Update last successful SDL version to ${{ steps.read_properties.outputs.sdlCommit }} from job ${{ github.run_number }} [skip ci]"
+          git push origin ci-data
+
