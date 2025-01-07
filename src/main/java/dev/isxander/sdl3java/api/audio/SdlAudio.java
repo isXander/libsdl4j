@@ -121,7 +121,7 @@ public final class SdlAudio {
 
     public static native boolean SDL_PutAudioStreamData(SDL_AudioStream stream, Pointer buf, int len);
 
-    public static native int SDL_GetAudioStreamData(SDL_AudioStream stream, PointerByReference buf, int len);
+    public static native int SDL_GetAudioStreamData(SDL_AudioStream stream, Pointer buf, int len);
 
     public static native int SDL_GetAudioStreamAvailable(SDL_AudioStream stream);
 
