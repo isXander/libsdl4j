@@ -2,6 +2,7 @@ package dev.isxander.sdl3java.api.guid;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Pointer;
+import dev.isxander.sdl3java.jna.JnaUtils;
 import dev.isxander.sdl3java.jna.SdlNativeLibraryLoader;
 
 public final class SdlGuid {
@@ -14,8 +15,10 @@ public final class SdlGuid {
     }
 
     public static String SDL_GUIDToString(SDL_GUID guid) {
+        SDL_GUID guidCopy = JnaUtils.copyStruct(guid);
+
         try (Memory pszGUID = new Memory(33)) {
-            InternalNativeFunctions.SDL_GUIDToString(guid, pszGUID, 33);
+            InternalNativeFunctions.SDL_GUIDToString(guidCopy, pszGUID, 33);
             return pszGUID.getString(0, "ASCII");
         }
     }

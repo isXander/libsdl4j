@@ -39,9 +39,17 @@ public class SdlGuidTest {
         });
     }
 
+    @Test
+    void sampleController() {
+        testGuid(new byte[] {
+                5, 0, 87, 86, 76, 5, 0, 0, -26, 12, 0, 0, 0, 0, 104, 0
+        });
+    }
+
     private void testGuid(byte[] data) {
         SDL_GUID guid = new SDL_GUID();
         guid.data = data;
+        guid.write();
 
         String guidString = SdlGuid.SDL_GUIDToString(guid);
         System.out.println("GUID: " + guidString);

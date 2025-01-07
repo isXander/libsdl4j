@@ -2,7 +2,9 @@ package dev.isxander.sdl3java.jna;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Pointer;
+import com.sun.jna.Structure;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import static dev.isxander.sdl3java.api.stdinc.SdlStdinc.SDL_free;
@@ -56,14 +58,28 @@ public final class JnaUtils {
         return buffer;
     }
 
-    public static void append(StringBuilder result, String name) {
-        if (result.length() > 0) {
-            result.append(" | ");
-        }
-        result.append(name);
-    }
-
     public static String flagsUnknown(int value) {
         return "UNKNOWN(" + Integer.toBinaryString(value) + ")";
+    }
+
+    public static <T extends Structure> T copyStruct(T original) {
+        T copy;
+
+        try {
+            // noinspection unchecked
+            copy = (T) original.getClass().getDeclaredConstructor().newInstance();
+        } catch (InvocationTargetException | InstantiationException | IllegalAccessException | NoSuchMethodException e) {
+            throw new RuntimeException("Failed to construct copy of struct", e);
+        }
+
+        Pointer cp = copy.getPointer();
+        Pointer op = original.getPointer();
+        int size = original.size();
+
+        original.write(); // ensure java fields are synced to native pointer
+        cp.write(0, op.getByteArray(0, size), 0, size); // copy the memory
+        copy.read(); // ensure java fields are synced to native pointer
+
+        return copy;
     }
 }
