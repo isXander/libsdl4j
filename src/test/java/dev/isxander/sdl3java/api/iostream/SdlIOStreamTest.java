@@ -2,7 +2,6 @@ package dev.isxander.sdl3java.api.iostream;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Pointer;
-import com.sun.jna.ptr.PointerByReference;
 import dev.isxander.sdl3java.api.SdlTest;
 import dev.isxander.sdl3java.jna.size_t;
 import org.junit.jupiter.api.AfterEach;
@@ -94,6 +93,10 @@ public final class SdlIOStreamTest {
 
     @Test
     public void LoadFileShouldGiveFileContent() throws Exception {
+        // if SDL build is configured to not track allocations, SDL_GetNumAllocations will always return -1
+        boolean trackingAllocations = SDL_GetNumAllocations() != -1;
+        System.out.println("Tracking allocations: " + trackingAllocations);
+
         Path sampleFile = SdlTest.getSampleFile(this, "sample.txt");
         int allocCount = SDL_GetNumAllocations();
 
@@ -111,9 +114,15 @@ public final class SdlIOStreamTest {
         assertEquals('i', (char) (buffer.getByte(offset++)));
         assertEquals('s', (char) (buffer.getByte(offset)));
 
-        assertEquals(allocCount + 1, SDL_GetNumAllocations());
+        if (trackingAllocations) {
+            assertEquals(allocCount + 1, SDL_GetNumAllocations());
+        }
+
         SDL_free(buffer);
-        assertEquals(allocCount, SDL_GetNumAllocations());
+
+        if (trackingAllocations) {
+            assertEquals(allocCount, SDL_GetNumAllocations());
+        }
     }
 
     @AfterEach
