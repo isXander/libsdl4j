@@ -4,9 +4,11 @@ plugins {
     id("net.kyori.blossom") version "1.3.+"
 }
 
-val sdlMajorVersion = 3
+val sdlMajorVersion: String by project
+val sdlMinorVersion: String by project
+val sdlMicroVersion: String by project
 val sdlCommit: String by project
-val sdlVersion = "$sdlMajorVersion.$sdlCommit"
+val sdlVersion = "$sdlMajorVersion.$sdlMinorVersion.$sdlMicroVersion.$sdlCommit"
 
 group = "dev.isxander.sdl3java"
 version = sdlVersion + "-" + (System.getenv("GITHUB_RUN_NUMBER") ?: "local")
@@ -39,8 +41,19 @@ tasks {
 
 blossom {
     val versionClass = "src/main/java/dev/isxander/sdl3java/api/version/SdlVersionConst.java"
-    replaceToken("0/*<majorversion>*/", "$sdlMajorVersion", versionClass)
-    replaceToken("\"\"/*<commit>*/", "\"$sdlCommit\"", versionClass)
+
+    fun replaceInt(name: String, value: Int, targetClass: String = versionClass) {
+        replaceToken("0/*<$name>*/", value.toString(), targetClass)
+    }
+    fun replaceString(name: String, value: String, targetClass: String = versionClass) {
+        replaceToken("\"\"/*<$name>*/", "\"$value\"", targetClass)
+    }
+
+    replaceInt("majorversion", sdlMajorVersion.toInt())
+    replaceInt("minorversion", sdlMinorVersion.toInt())
+    replaceInt("microversion", sdlMicroVersion.toInt())
+
+    replaceString("commit", sdlCommit)
 }
 
 tasks.withType<JavaCompile> {
