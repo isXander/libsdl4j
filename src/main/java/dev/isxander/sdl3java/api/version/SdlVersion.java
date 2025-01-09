@@ -11,13 +11,13 @@ public final class SdlVersion {
     private SdlVersion() {
     }
 
-    public static SDL_version SDL_GetJavaBindingsVersion() {
-        SDL_version ver = new SDL_version();
-        ver.major = 3;
-        ver.minor = 0;
-        ver.patch = 0;
-        return ver;
+    public static SdlVersionRecord SDL_GetJavaBindingsVersion() {
+        return new SdlVersionRecord(
+                SdlVersionConst.SDL_MAJOR_VERSION,
+                SdlVersionConst.SDL_MINOR_VERSION,
+                SdlVersionConst.SDL_MICRO_VERSION
+        );
     }
 
-    public static native void SDL_GetVersion(SDL_version ver);
+    public static native int SDL_GetVersion();
 }
