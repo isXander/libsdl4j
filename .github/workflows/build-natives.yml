@@ -9,56 +9,9 @@ permissions:
   contents: write
 
 jobs:
-  detect-sdl-change:
-    name: Detect if SDL version has changed since last successful job
-    runs-on: ubuntu-latest
-
-    outputs:
-      sdl_changed: ${{ steps.check_sdl.outputs.sdl_changed }}
-
-    steps:
-      - name: Check out main repo
-        uses: actions/checkout@v4
-        with:
-          ref: SDL3
-
-      - name: Read current SDL version
-        uses: BrycensRanch/read-properties-action@v1
-        id: read_current
-        with:
-          file: gradle.properties
-          property: sdlCommit
-
-      - name: Check out ci-data branch
-        uses: actions/checkout@v4
-        with:
-          repository: ${{ github.repository }}
-          path: ci-data
-          ref: ci-data
-
-      - name: Compare with last successful version
-        id: check_sdl
-        run: |
-          CURRENT_SDL_VERSION="${{ steps.read_current.outputs.sdlCommit }}"
-          LAST_SDL_VERSION="$(cat ci-data/last_successful_sdl.txt || echo '0.0.0')"
-          
-          echo "Current: $CURRENT_SDL_VERSION"
-          echo "Last successful: $LAST_SDL_VERSION"
-          
-          if [ "$CURRENT_SDL_VERSION" = "$LAST_SDL_VERSION" ]; then
-            echo "SDL version not changed since last successful build."
-            echo "sdl_changed=false" >> $GITHUB_OUTPUT
-          else
-            echo "SDL version changed!"
-            echo "sdl_changed=true" >> $GITHUB_OUTPUT
-          fi
-
   build-windows:
     runs-on: ubuntu-latest
     name: Build Windows Natives
-
-    needs: [ detect-sdl-change ]
-    continue-on-error: true
 
     strategy:
       fail-fast: false
@@ -69,11 +22,6 @@ jobs:
         ]
 
     steps:
-      # Exit early with code 0 to show success if no changes
-      - name: Exit early if no changes
-        if: ${{ needs.detect-sdl-change.outputs.sdl_changed == 'false' }}
-        run: exit 1
-
       - uses: actions/checkout@v4
       - name: Set up JDK
         uses: actions/setup-java@v4
@@ -87,7 +35,7 @@ jobs:
           property: sdlCommit
       - name: Clone SDL3
         run: |
-          git clone https://github.com/libsdl-org/SDL.git --branch main --single-branch SDL
+          git clone https://github.com/isXander/SDL.git --branch rumble-fix --single-branch SDL
           cd SDL
           git reset --hard ${{ steps.read-properties.outputs.sdlCommit }}
       - name: Get build dependencies
@@ -115,9 +63,6 @@ jobs:
     runs-on: ubuntu-latest
     name: Build Linux Natives
 
-    needs: [ detect-sdl-change ]
-    continue-on-error: true
-
     strategy:
       fail-fast: false
       matrix:
@@ -129,11 +74,6 @@ jobs:
         ]
 
     steps:
-      # Exit early with code 0 to show success if no changes
-      - name: Exit early if no changes
-        if: ${{ needs.detect-sdl-change.outputs.sdl_changed == 'false' }}
-        run: exit 1
-
       - uses: actions/checkout@v4
       - name: Set up JDK
         uses: actions/setup-java@v4
@@ -147,7 +87,7 @@ jobs:
           property: sdlCommit
       - name: Clone SDL3
         run: |
-          git clone https://github.com/libsdl-org/SDL.git --branch main --single-branch SDL
+          git clone https://github.com/isXander/SDL.git --branch rumble-fix --single-branch SDL
           cd SDL
           git reset --hard ${{ steps.read-properties.outputs.sdlCommit }}
       - name: Get build dependencies
@@ -172,15 +112,7 @@ jobs:
     runs-on: macos-latest
     name: Build MacOS Natives
 
-    needs: [ detect-sdl-change ]
-    continue-on-error: true
-
     steps:
-      # Exit early with code 0 to show success if no changes
-      - name: Exit early if no changes
-        if: ${{ needs.detect-sdl-change.outputs.sdl_changed == 'false' }}
-        run: exit 1
-
       - uses: actions/checkout@v4
       - name: Set up JDK
         uses: actions/setup-java@v4
@@ -194,7 +126,7 @@ jobs:
           property: sdlCommit
       - name: Clone SDL3
         run: |
-          git clone https://github.com/libsdl-org/SDL.git --branch main --single-branch SDL
+          git clone https://github.com/isXander/SDL.git --branch rumble-fix --single-branch SDL
           cd SDL
           git reset --hard ${{ steps.read-properties.outputs.sdlCommit }}
       - name: Get build dependencies
@@ -216,103 +148,3 @@ jobs:
         with:
           name: natives-macos-universal
           path: libs/natives/**
-
-  publish:
-    runs-on: ubuntu-latest
-    name: Publish Library
-    needs: [detect-sdl-change, build-windows, build-linux, build-macos]
-    if: needs.detect-sdl-change.outputs.sdl_changed == 'false' ||
-      (needs.build-windows.result == 'success' &&
-      needs.build-linux.result == 'success' &&
-      needs.build-macos.result == 'success')
-
-    steps:
-      - name: Define this job's action
-        id: action
-        run: |
-          ALL_BUILT="${{ needs.build-windows.result == 'success' && needs.build-linux.result == 'success' && needs.build-macos.result == 'success' }}"
-          echo "all-built=$ALL_BUILT" >> $GITHUB_OUTPUT
-          # java library if all built OR sdl not changed
-          if [ "$ALL_BUILT" = "true" ] || [ "${{ needs.detect-sdl-change.outputs.sdl_changed }}" = "false" ]; then
-              echo "publish-java=true" >> $GITHUB_OUTPUT
-              echo "Publishing Java Library"
-          else
-              echo "publish-java=false" >> $GITHUB_OUTPUT
-          fi
-          # natives if all built AND sdl changed
-          if [ "$ALL_BUILT" = "true" ] && [ "${{ needs.detect-sdl-change.outputs.sdl_changed }}" = "true" ]; then
-              echo "publish-natives=true" >> $GITHUB_OUTPUT
-              echo "Publishing natives"
-          else
-              echo "publish-natives=false" >> $GITHUB_OUTPUT
-          fi
-
-      - uses: actions/checkout@v4
-      - name: Set up JDK
-        uses: actions/setup-java@v4
-        with:
-          java-version: 17
-          distribution: temurin
-
-      # Publish Java Library if SDL version has not changed or all native builds are successful
-      - name: Publish Java Library to Maven
-        if: ${{ steps.action.outputs.publish-java == 'true' }}
-        run: |
-          chmod +x gradlew
-          ./gradlew publishJavaLibraryPublicationToXanderReleasesRepository
-        env:
-          XANDER_MAVEN_USER: xander
-          XANDER_MAVEN_PASS: ${{ secrets.XANDER_MAVEN_PASS }}
-      - name: Upload artifacts
-        if: ${{ steps.action.outputs.publish-java == 'true' }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: java-library
-          path: build/libs/*.jar
-
-      # Publish natives if SDL version has changed and all native builds are successful
-      - name: Download built natives
-        if: ${{ steps.action.outputs.publish-natives == 'true' }}
-        uses: actions/download-artifact@v4
-        with:
-          pattern: natives-*
-          merge-multiple: true
-          path: libs/natives
-      - name: Publish Natives to Maven
-        if: ${{ steps.action.outputs.publish-natives == 'true' }}
-        run: |
-          chmod +x gradlew
-          ./gradlew publishNativesPublicationToXanderReleasesRepository
-        env:
-          XANDER_MAVEN_USER: xander
-          XANDER_MAVEN_PASS: ${{ secrets.XANDER_MAVEN_PASS }}
-
-      - name: Get SDL version
-        uses: BrycensRanch/read-properties-action@v1
-        id: read_properties
-        if: ${{ steps.action.outputs.publish-natives == 'true' }}
-        with:
-          file: gradle.properties
-          property: sdlCommit
-      - name: Checkout ci-data branch
-        uses: actions/checkout@v4
-        if: ${{ steps.action.outputs.publish-natives == 'true' }}
-        with:
-          repository: ${{ github.repository }}
-          ref: ci-data
-          path: ci-data
-      - name: Save last successful SDL version
-        if: ${{ steps.action.outputs.publish-natives == 'true' }}
-        run: |
-          echo ${{ steps.read_properties.outputs.sdlCommit }} > last_successful_sdl.txt
-        working-directory: ci-data
-      - name: Commit and push last successful SDL version
-        if: ${{ steps.action.outputs.publish-natives == 'true' }}
-        run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          git add last_successful_sdl.txt
-          git commit -m "Update last successful SDL version to ${{ steps.read_properties.outputs.sdlCommit }} from job ${{ github.run_number }} [skip ci]"
-          git push origin ci-data
-        working-directory: ci-data
-
