@@ -3,7 +3,7 @@ name: Build Natives
 on:
   push:
     branches:
-      - SDL3
+      - SDL3-rumblefixfork
 
 permissions:
   contents: write
