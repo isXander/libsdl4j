@@ -161,7 +161,7 @@ jobs:
           cmake --build build --config Release
       - name: Compress libSDL3.so
         run: |
-          upx --best --lzma SDL/build/libSDL3.so
+          upx --best --lzma "$(readlink -f SDL/build/libSDL3.so)"
       - name: Add SDL3.so to folder
         run: |
           mkdir -p libs/natives/${{ matrix.name }}
