@@ -97,7 +97,7 @@ jobs:
       - name: Build SDL3
         working-directory: SDL
         run: |
-          cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE=build-scripts/cmake-toolchain-${{ matrix.toolchain }}.cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_SHARED_LINKER_FLAGS_RELEASE="-Wl,-s" -DCMAKE_C_FLAGS_RELEASE="-O3 -DNDEBUG -ffunction-sections -fdata-sections" -DCMAKE_CXX_FLAGS_RELEASE="-O3 -DNDEBUG -ffunction-sections -fdata-sections" -DCMAKE_EXE_LINKER_FLAGS_RELEASE="-Wl,--gc-sections"
+          cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE=build-scripts/cmake-toolchain-${{ matrix.toolchain }}.cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_SHARED_LINKER_FLAGS_RELEASE="-Wl,-s" -DCMAKE_C_FLAGS_RELEASE="-O3 -DNDEBUG -ffunction-sections -fdata-sections" -DCMAKE_CXX_FLAGS_RELEASE="-O3 -DNDEBUG -ffunction-sections -fdata-sections" -DCMAKE_EXE_LINKER_FLAGS_RELEASE="-Wl,--gc-sections" -DSDL_VIDEO=OFF -DSDL_RENDER=OFF -DSDL_UNIX_CONSOLE_BUILD=ON
           cmake --build build --config Release
       - name: Compress SDL3.dll
         run: |
@@ -157,7 +157,7 @@ jobs:
       - name: Build SDL3 for linux64
         working-directory: SDL
         run: |
-          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release ${{ matrix.cmakeargs }} -DCMAKE_C_FLAGS_RELEASE="-O3 -DNDEBUG -ffunction-sections -fdata-sections" -DCMAKE_CXX_FLAGS_RELEASE="-O3 -DNDEBUG -ffunction-sections -fdata-sections" -DCMAKE_SHARED_LINKER_FLAGS_RELEASE="-Wl,--gc-sections -Wl,-s"
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release ${{ matrix.cmakeargs }} -DCMAKE_C_FLAGS_RELEASE="-O3 -DNDEBUG -ffunction-sections -fdata-sections" -DCMAKE_CXX_FLAGS_RELEASE="-O3 -DNDEBUG -ffunction-sections -fdata-sections" -DCMAKE_SHARED_LINKER_FLAGS_RELEASE="-Wl,--gc-sections -Wl,-s" -DSDL_VIDEO=OFF -DSDL_RENDER=OFF -DSDL_UNIX_CONSOLE_BUILD=ON
           cmake --build build --config Release
       - name: Compress libSDL3.so
         run: |
@@ -206,7 +206,7 @@ jobs:
       - name: Build SDL3 for mac64
         working-directory: SDL
         run: |
-          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_FLAGS_RELEASE="-O3 -DNDEBUG -ffunction-sections -fdata-sections" -DCMAKE_CXX_FLAGS_RELEASE="-O3 -DNDEBUG -ffunction-sections -fdata-sections" -DCMAKE_SHARED_LINKER_FLAGS_RELEASE="-Wl,-dead_strip -Wl,-S"
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_FLAGS_RELEASE="-O3 -DNDEBUG -ffunction-sections -fdata-sections" -DCMAKE_CXX_FLAGS_RELEASE="-O3 -DNDEBUG -ffunction-sections -fdata-sections" -DCMAKE_SHARED_LINKER_FLAGS_RELEASE="-Wl,-dead_strip -Wl,-S" -DSDL_VIDEO=OFF -DSDL_RENDER=OFF -DSDL_UNIX_CONSOLE_BUILD=ON
           cmake --build build --config Release
           strip -x -S "$(greadlink -f SDL/build/libSDL3.dylib)"
         env:
