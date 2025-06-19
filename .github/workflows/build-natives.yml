@@ -249,7 +249,7 @@ jobs:
             -DCMAKE_OSX_ARCHITECTURES="${{ matrix.arch }}" \
             -DSDL_RENDER=OFF
           cmake --build build --config Release
-          strip -x -S "$(greadlink -f SDL/build/libSDL3.dylib)"
+          strip -x -S "$(greadlink -f build/libSDL3.dylib)"
       - name: Add SDL3.dylib to folder
         run: |
           mkdir -p libs/natives/macos-${{ matrix.name }}
