@@ -87,7 +87,7 @@ jobs:
           property: sdlCommit
       - name: Clone SDL3
         run: |
-          git clone https://github.com/libsdl-org/SDL.git --branch main --single-branch SDL
+          git clone https://github.com/libsdl-org/SDL.git --branch main
           cd SDL
           git reset --hard ${{ steps.read-properties.outputs.sdlCommit }}
       - name: Get build dependencies
@@ -147,7 +147,7 @@ jobs:
           property: sdlCommit
       - name: Clone SDL3
         run: |
-          git clone https://github.com/libsdl-org/SDL.git --branch main --single-branch SDL
+          git clone https://github.com/libsdl-org/SDL.git --branch main
           cd SDL
           git reset --hard ${{ steps.read-properties.outputs.sdlCommit }}
       - name: Get build dependencies
@@ -197,7 +197,7 @@ jobs:
           property: sdlCommit
       - name: Clone SDL3
         run: |
-          git clone https://github.com/libsdl-org/SDL.git --branch main --single-branch SDL
+          git clone https://github.com/libsdl-org/SDL.git --branch main
           cd SDL
           git reset --hard ${{ steps.read-properties.outputs.sdlCommit }}
       - name: Get build dependencies
