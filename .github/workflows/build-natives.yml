@@ -202,12 +202,13 @@ jobs:
           git reset --hard ${{ steps.read-properties.outputs.sdlCommit }}
       - name: Get build dependencies
         run: |
-          brew install --formula --quiet cmake
+          brew install --formula --quiet cmake coreutils
       - name: Build SDL3 for mac64
         working-directory: SDL
         run: |
           cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_FLAGS_RELEASE="-O3 -DNDEBUG -ffunction-sections -fdata-sections" -DCMAKE_CXX_FLAGS_RELEASE="-O3 -DNDEBUG -ffunction-sections -fdata-sections" -DCMAKE_SHARED_LINKER_FLAGS_RELEASE="-Wl,-dead_strip -Wl,-S"
           cmake --build build --config Release
+          strip -x -S "$(greadlink -f SDL/build/libSDL3.dylib)"
         env:
           CMAKE_OSX_ARCHITECTURES: 'arm64;x86_64'
       - name: Add SDL3.dylib to folder
