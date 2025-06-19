@@ -101,7 +101,7 @@ jobs:
           cmake --build build --config Release
       - name: Compress SDL3.dll
         run: |
-          upx -9 SDL/build/SDL3.dll
+          upx --best --lzma SDL/build/SDL3.dll
       - name: Add SDL3.dll to folder
         run: |
           mkdir -p libs/natives/${{ matrix.name }}
@@ -161,7 +161,7 @@ jobs:
           cmake --build build --config Release
       - name: Compress libSDL3.so
         run: |
-          upx -9 SDL/build/libSDL3.so
+          upx --best --lzma SDL/build/libSDL3.so
       - name: Add SDL3.so to folder
         run: |
           mkdir -p libs/natives/${{ matrix.name }}
