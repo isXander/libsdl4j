@@ -64,8 +64,7 @@ jobs:
       fail-fast: false
       matrix:
         include: [
-          { toolchain: mingw64-x86_64, name: "windows-x86_64" },
-          { toolchain: mingw64-i686, name: "windows-x86" }
+          { toolchain: mingw64-x86_64, name: "windows-x86_64" }
         ]
 
     steps:
@@ -97,7 +96,14 @@ jobs:
       - name: Build SDL3
         working-directory: SDL
         run: |
-          cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE=build-scripts/cmake-toolchain-${{ matrix.toolchain }}.cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_SHARED_LINKER_FLAGS_RELEASE="-Wl,-s" -DCMAKE_C_FLAGS_RELEASE="-O3 -DNDEBUG -ffunction-sections -fdata-sections" -DCMAKE_CXX_FLAGS_RELEASE="-O3 -DNDEBUG -ffunction-sections -fdata-sections" -DCMAKE_EXE_LINKER_FLAGS_RELEASE="-Wl,--gc-sections" -DSDL_VIDEO=OFF -DSDL_RENDER=OFF -DSDL_UNIX_CONSOLE_BUILD=ON
+          cmake -S . -B build \
+            -DCMAKE_TOOLCHAIN_FILE=build-scripts/cmake-toolchain-${{ matrix.toolchain }}.cmake \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_SHARED_LINKER_FLAGS_RELEASE="-Wl,-s" \
+            -DCMAKE_C_FLAGS_RELEASE="-Oz -DNDEBUG -ffunction-sections -fdata-sections" \
+            -DCMAKE_CXX_FLAGS_RELEASE="-Oz -DNDEBUG -ffunction-sections -fdata-sections" \
+            -DCMAKE_EXE_LINKER_FLAGS_RELEASE="-Wl,--gc-sections" \
+            -DSDL_VIDEO=OFF -DSDL_RENDER=OFF -DSDL_UNIX_CONSOLE_BUILD=ON
           cmake --build build --config Release
       - name: Compress SDL3.dll
         run: |
@@ -153,11 +159,31 @@ jobs:
       - name: Get build dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install build-essential git make pkg-config cmake ninja-build gnome-desktop-testing libasound2-dev libpulse-dev libaudio-dev libjack-dev libsndio-dev libx11-dev libxext-dev libxrandr-dev libxcursor-dev libxfixes-dev libxi-dev libxss-dev libxkbcommon-dev libdrm-dev libgbm-dev libgl1-mesa-dev libgles2-mesa-dev libegl1-mesa-dev libdbus-1-dev libibus-1.0-dev libudev-dev fcitx-libs-dev libpipewire-0.3-dev libwayland-dev libdecor-0-dev liburing-dev upx ${{ matrix.packages }}
+          sudo apt-get install \
+            build-essential git make pkg-config cmake ninja-build \
+            gnome-desktop-testing \
+            libasound2-dev libpulse-dev libaudio-dev libjack-dev libsndio-dev \
+            libx11-dev libxext-dev libxrandr-dev libxcursor-dev libxfixes-dev libxi-dev libxss-dev libxkbcommon-dev \
+            libdrm-dev libgbm-dev \
+            libgl1-mesa-dev libgles2-mesa-dev libegl1-mesa-dev \
+            libdbus-1-dev libibus-1.0-dev libudev-dev \
+            fcitx-libs-dev \
+            libpipewire-0.3-dev \
+            libwayland-dev \
+            libdecor-0-dev \
+            liburing-dev \
+            upx \
+            ${{ matrix.packages }}
       - name: Build SDL3 for linux64
         working-directory: SDL
         run: |
-          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release ${{ matrix.cmakeargs }} -DCMAKE_C_FLAGS_RELEASE="-O3 -DNDEBUG -ffunction-sections -fdata-sections" -DCMAKE_CXX_FLAGS_RELEASE="-O3 -DNDEBUG -ffunction-sections -fdata-sections" -DCMAKE_SHARED_LINKER_FLAGS_RELEASE="-Wl,--gc-sections -Wl,-s" -DSDL_VIDEO=OFF -DSDL_RENDER=OFF -DSDL_UNIX_CONSOLE_BUILD=ON
+          cmake -S . -B build \
+            -DCMAKE_BUILD_TYPE=Release \
+            ${{ matrix.cmakeargs }} \
+            -DCMAKE_C_FLAGS_RELEASE="-Oz -DNDEBUG -ffunction-sections -fdata-sections" \
+            -DCMAKE_CXX_FLAGS_RELEASE="-Oz -DNDEBUG -ffunction-sections -fdata-sections" \
+            -DCMAKE_SHARED_LINKER_FLAGS_RELEASE="-Wl,--gc-sections -Wl,-s" \
+            -DSDL_VIDEO=OFF -DSDL_RENDER=OFF -DSDL_UNIX_CONSOLE_BUILD=ON
           cmake --build build --config Release
       - name: Compress libSDL3.so
         run: |
@@ -177,6 +203,14 @@ jobs:
 
     needs: [ detect-sdl-change ]
     continue-on-error: true
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include: [
+          { name: "aarch64", arch: "arm64" },
+          { name: "x86_64", arch: "x86_64" },
+        ]
 
     steps:
       # Exit early with code 0 to show success if no changes
@@ -202,23 +236,28 @@ jobs:
           git reset --hard ${{ steps.read-properties.outputs.sdlCommit }}
       - name: Get build dependencies
         run: |
-          brew install --formula --quiet cmake coreutils
+          brew install --formula --quiet \
+            cmake coreutils
       - name: Build SDL3 for mac64
         working-directory: SDL
         run: |
-          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_FLAGS_RELEASE="-O3 -DNDEBUG -ffunction-sections -fdata-sections" -DCMAKE_CXX_FLAGS_RELEASE="-O3 -DNDEBUG -ffunction-sections -fdata-sections" -DCMAKE_SHARED_LINKER_FLAGS_RELEASE="-Wl,-dead_strip -Wl,-S" -DSDL_VIDEO=OFF -DSDL_RENDER=OFF -DSDL_UNIX_CONSOLE_BUILD=ON
+          cmake -S . -B build \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_C_FLAGS_RELEASE="-Oz -flto -DNDEBUG -ffunction-sections -fdata-sections" \
+            -DCMAKE_CXX_FLAGS_RELEASE="-Oz -flto -DNDEBUG -ffunction-sections -fdata-sections" \
+            -DCMAKE_SHARED_LINKER_FLAGS_RELEASE="-Wl,-dead_strip -Wl,-S" \
+            -DCMAKE_OSX_ARCHITECTURES="${{ matrix.arch }}" \
+            -DSDL_RENDER=OFF
           cmake --build build --config Release
           strip -x -S "$(greadlink -f SDL/build/libSDL3.dylib)"
-        env:
-          CMAKE_OSX_ARCHITECTURES: 'arm64;x86_64'
       - name: Add SDL3.dylib to folder
         run: |
-          mkdir -p libs/natives/macos-universal
-          cp SDL/build/libSDL3.dylib libs/natives/macos-universal/SDL3.dylib
+          mkdir -p libs/natives/macos-${{ matrix.name }}
+          cp SDL/build/libSDL3.dylib libs/natives/macos-${{ matrix.name }}/SDL3.dylib
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: natives-macos-universal
+          name: natives-macos-${{ matrix.name }}
           path: libs/natives/**
 
   publish:
