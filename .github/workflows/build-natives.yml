@@ -129,9 +129,9 @@ jobs:
       matrix:
         include: [
           # Running on x86_64 runner, nothing extra needed
-          { name: "linux-x86_64", packages: "", cmakeargs: "" },
+          { name: "linux-x86_64", packages: "", cmakeargs: "", toolchainprefix: "" },
           # Running on aarch64 runner, need to install gcc-aarch64-linux-gnu toolchain
-          { name: "linux-aarch64", packages: "gcc-aarch64-linux-gnu", cmakeargs: "-DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++" },
+          { name: "linux-aarch64", packages: "crossbuild-essential-arm64", cmakeargs: "-DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++", toolchainprefix: "aarch64-linux-gnu-" },
         ]
 
     steps:
@@ -185,8 +185,8 @@ jobs:
             -DCMAKE_SHARED_LINKER_FLAGS_RELEASE="-Wl,--gc-sections -Wl,-z,noexecstack" \
             -DSDL_VIDEO=OFF -DSDL_RENDER=OFF -DSDL_UNIX_CONSOLE_BUILD=ON
           cmake --build build --config Release
-          strip --strip-unneeded build/libSDL3.so
-          objcopy --remove-section=.comment --remove-section=.note build/libSDL3.so
+          ${{ matrix.toolchainprefix }}strip --strip-unneeded build/libSDL3.so
+          ${{ matrix.toolchainprefix }}objcopy --remove-section=.comment --remove-section=.note build/libSDL3.so
       - name: Add SDL3.so to folder
         run: |
           mkdir -p libs/natives/${{ matrix.name }}
