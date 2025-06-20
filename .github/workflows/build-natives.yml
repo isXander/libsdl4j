@@ -180,14 +180,13 @@ jobs:
           cmake -S . -B build \
             -DCMAKE_BUILD_TYPE=Release \
             ${{ matrix.cmakeargs }} \
-            -DCMAKE_C_FLAGS_RELEASE="-Oz -DNDEBUG -ffunction-sections -fdata-sections" \
-            -DCMAKE_CXX_FLAGS_RELEASE="-Oz -DNDEBUG -ffunction-sections -fdata-sections" \
-            -DCMAKE_SHARED_LINKER_FLAGS_RELEASE="-Wl,--gc-sections -Wl,-s" \
+            -DCMAKE_C_FLAGS_RELEASE="-Oz -DNDEBUG -flto -ffunction-sections -fdata-sections" \
+            -DCMAKE_CXX_FLAGS_RELEASE="-Oz -DNDEBUG -flto -ffunction-sections -fdata-sections" \
+            -DCMAKE_SHARED_LINKER_FLAGS_RELEASE="-Wl,--gc-sections -Wl,-z,noexecstack" \
             -DSDL_VIDEO=OFF -DSDL_RENDER=OFF -DSDL_UNIX_CONSOLE_BUILD=ON
           cmake --build build --config Release
-      - name: Compress libSDL3.so
-        run: |
-          upx --best --lzma "$(readlink -f SDL/build/libSDL3.so)"
+          strip --strip-unneeded build/libSDL3.so
+          objcopy --remove-section=.comment --remove-section=.note build/libSDL3.so
       - name: Add SDL3.so to folder
         run: |
           mkdir -p libs/natives/${{ matrix.name }}
