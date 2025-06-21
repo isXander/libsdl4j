@@ -30,14 +30,18 @@ public final class SdlJoystick {
         IntByReference count = new IntByReference();
         Pointer p = InternalNativeFunctions.SDL_GetJoysticks(count);
 
-        if (p == null) {
+        int n = count.getValue();
+        if (p == null || n == 0) {
             return new SDL_JoystickID[0];
         }
 
-        SDL_JoystickID[] joysticks = new SDL_JoystickID[count.getValue()];
+        SDL_JoystickID[] joysticks = new SDL_JoystickID[n];
+        int size = Native.getNativeSize(SDL_JoystickID.class); // should be 4
 
-        for (int i = 0; i < joysticks.length; i++) {
-            joysticks[i] = new SDL_JoystickID(p.getNativeLong((long) i * Native.getNativeSize(SDL_JoystickID.class)).longValue());
+        for (int i = 0; i < n; i++) {
+            // Read exactly 4 bytes at offset, since SDL_JoystickID is Sint32
+            int raw = p.getInt((long) i * size);
+            joysticks[i] = new SDL_JoystickID(raw);
         }
 
         return joysticks;
