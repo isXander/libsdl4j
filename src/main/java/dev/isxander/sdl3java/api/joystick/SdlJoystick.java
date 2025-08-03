@@ -27,21 +27,19 @@ public final class SdlJoystick {
     public static native boolean SDL_HasJoystick();
 
     public static SDL_JoystickID[] SDL_GetJoysticks() {
-        IntByReference count = new IntByReference();
-        Pointer p = InternalNativeFunctions.SDL_GetJoysticks(count);
+        IntByReference countRef = new IntByReference();
+        Pointer joysticksPtr = InternalNativeFunctions.SDL_GetJoysticks(countRef);
+        int count = countRef.getValue();
 
-        int n = count.getValue();
-        if (p == null || n == 0) {
+        if (count <= 0 || joysticksPtr == null) {
             return new SDL_JoystickID[0];
         }
 
-        SDL_JoystickID[] joysticks = new SDL_JoystickID[n];
-        int size = Native.getNativeSize(SDL_JoystickID.class); // should be 4
-
-        for (int i = 0; i < n; i++) {
-            // Read exactly 4 bytes at offset, since SDL_JoystickID is Sint32
-            int raw = p.getInt((long) i * size);
-            joysticks[i] = new SDL_JoystickID(raw);
+        SDL_JoystickID[] joysticks = new SDL_JoystickID[count];
+        for (int i = 0; i < count; i++) {
+            long offset = (long) i * SDL_JoystickID.SIZE;
+            int idValue = joysticksPtr.getInt(offset);
+            joysticks[i] = new SDL_JoystickID(idValue);
         }
 
         return joysticks;

@@ -20,7 +20,7 @@ repositories {
 }
 
 dependencies {
-    api("net.java.dev.jna:jna:5.13.0")
+    api("net.java.dev.jna:jna:5.14.0")
     api("org.jetbrains:annotations:23.0.0")
     api("org.slf4j:slf4j-api:1.7.36")
 

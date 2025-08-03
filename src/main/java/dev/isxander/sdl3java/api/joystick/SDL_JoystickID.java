@@ -10,6 +10,10 @@ import com.sun.jna.IntegerType;
  * <p>The ID value starts at 0 and increments from there. The value -1 is an invalid ID.</p>
  */
 public final class SDL_JoystickID extends IntegerType {
+    /**
+     * The size of the native type (Uint32), which is 4 bytes.
+     */
+    public static final int SIZE = 4;
 
     /**
      * Create a zero-valued signed IntegerType.
@@ -19,9 +23,10 @@ public final class SDL_JoystickID extends IntegerType {
     }
 
     /**
-     * Create a signed IntegerType with the given value.
+     * Constructor that takes a Java long to initialize the value.
+     * @param value The initial value for the joystick ID.
      */
     public SDL_JoystickID(long value) {
-        super(4, value, false);
+        super(SIZE, value, false);
     }
 }
