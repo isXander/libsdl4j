@@ -14,6 +14,7 @@ public final class SDL_JoystickType implements JnaEnum {
     public static final int SDL_JOYSTICK_TYPE_DRUM_KIT = 7;
     public static final int SDL_JOYSTICK_TYPE_ARCADE_PAD = 8;
     public static final int SDL_JOYSTICK_TYPE_THROTTLE = 9;
+    public static final int SDL_JOYSTICK_TYPE_MAX = 10;
 
     private SDL_JoystickType() {
     }

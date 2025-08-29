@@ -2,7 +2,6 @@ package dev.isxander.sdl3java.api.events;
 
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.PointerByReference;
-import dev.isxander.sdl3java.api.events.events.SDL_Event;
 import dev.isxander.sdl3java.jna.NativeInt;
 import dev.isxander.sdl3java.jna.SdlNativeLibraryLoader;
 import org.intellij.lang.annotations.MagicConstant;
@@ -28,13 +27,13 @@ public final class SdlEvents {
 
     public static native void SDL_FlushEvents(@MagicConstant(valuesFromClass = SDL_EventType.class) int minType, @MagicConstant(valuesFromClass = SDL_EventType.class) int maxType);
 
-    public static native boolean SDL_PollEvent(SDL_Event event);
+    public static native boolean SDL_PollEvent(SdlEventTypes.SDL_Event event);
 
-    public static native boolean SDL_WaitEvent(SDL_Event event);
+    public static native boolean SDL_WaitEvent(SdlEventTypes.SDL_Event event);
 
-    public static native boolean SDL_WaitEventTimeout(SDL_Event event, int timeout);
+    public static native boolean SDL_WaitEventTimeout(SdlEventTypes.SDL_Event event, int timeout);
 
-    public static native boolean SDL_PushEvent(SDL_Event event);
+    public static native boolean SDL_PushEvent(SdlEventTypes.SDL_Event event);
 
     public static native void SDL_SetEventFilter(SDL_EventFilter filter, Pointer userdata);
 

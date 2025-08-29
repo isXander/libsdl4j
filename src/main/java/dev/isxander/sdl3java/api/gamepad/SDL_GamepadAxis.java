@@ -20,7 +20,7 @@ public final class SDL_GamepadAxis implements JnaEnum {
     public static final byte SDL_GAMEPAD_AXIS_RIGHTY = 3;
     public static final byte SDL_GAMEPAD_AXIS_LEFT_TRIGGER = 4;
     public static final byte SDL_GAMEPAD_AXIS_RIGHT_TRIGGER = 5;
-    public static final byte SDL_GAMEPAD_AXIS_MAX = 6;
+    public static final byte SDL_GAMEPAD_AXIS_COUNT = 6;
 
     public static String toString(int value) {
         return switch (value) {
@@ -31,7 +31,7 @@ public final class SDL_GamepadAxis implements JnaEnum {
             case SDL_GAMEPAD_AXIS_RIGHTY -> "SDL_GAMEPAD_AXIS_RIGHTY";
             case SDL_GAMEPAD_AXIS_LEFT_TRIGGER -> "SDL_GAMEPAD_AXIS_LEFT_TRIGGER";
             case SDL_GAMEPAD_AXIS_RIGHT_TRIGGER -> "SDL_GAMEPAD_AXIS_RIGHT_TRIGGER";
-            case SDL_GAMEPAD_AXIS_MAX -> "SDL_GAMEPAD_AXIS_MAX";
+            case SDL_GAMEPAD_AXIS_COUNT -> "SDL_GAMEPAD_AXIS_COUNT";
             default -> "Unknown Axis";
         };
     }

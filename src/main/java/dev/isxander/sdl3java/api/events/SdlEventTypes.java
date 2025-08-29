@@ -6,6 +6,7 @@ import com.sun.jna.Union;
 import dev.isxander.sdl3java.api.gamepad.SDL_GamepadAxis;
 import dev.isxander.sdl3java.api.gamepad.SDL_GamepadButton;
 import dev.isxander.sdl3java.api.joystick.SDL_JoystickID;
+import dev.isxander.sdl3java.api.power.SDL_PowerState;
 import dev.isxander.sdl3java.api.sensor.SDL_SensorType;
 import org.intellij.lang.annotations.MagicConstant;
 
@@ -22,8 +23,8 @@ import org.intellij.lang.annotations.MagicConstant;
  *   <li>Uint8 → {@code byte}, Sint16/Uint16 → {@code short}, Uint32/Sint32 → {@code int}, Uint64 → {@code long}, bool → {@code boolean}</li>
  * </ul>
  */
-public final class SDL3Events {
-    private SDL3Events() {}
+public final class SdlEventTypes {
+    private SdlEventTypes() {}
 
     // ---------------------------------------------------
     // Common event header

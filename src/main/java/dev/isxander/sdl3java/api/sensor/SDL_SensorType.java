@@ -47,6 +47,8 @@ public final class SDL_SensorType implements JnaEnum {
      */
     public static final int SDL_SENSOR_GYRO_R = 6;
 
+    public static final int SDL_SENSOR_COUNT = 7;
+
     private SDL_SensorType() {
     }
 }

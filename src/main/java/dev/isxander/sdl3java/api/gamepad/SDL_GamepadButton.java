@@ -34,7 +34,7 @@ public final class SDL_GamepadButton implements JnaEnum {
     public static final int SDL_GAMEPAD_BUTTON_MISC4 = 23;
     public static final int SDL_GAMEPAD_BUTTON_MISC5 = 24;
     public static final int SDL_GAMEPAD_BUTTON_MISC6 = 25;
-    public static final int SDL_GAMEPAD_BUTTON_MAX = 26;
+    public static final int SDL_GAMEPAD_BUTTON_COUNT = 26;
 
     private SDL_GamepadButton() {
     }

@@ -15,9 +15,8 @@ public final class SDL_GamepadType implements JnaEnum {
     public static final int SDL_GAMEPAD_TYPE_NINTENDO_SWITCH_JOYCON_LEFT = 8;
     public static final int SDL_GAMEPAD_TYPE_NINTENDO_SWITCH_JOYCON_RIGHT = 9;
     public static final int SDL_GAMEPAD_TYPE_NINTENDO_SWITCH_JOYCON_PAIR = 10;
-    public static final int SDL_GAMEPAD_TYPE_MAX = 11;
-
-    // TODO: Generate public static String toString(int value)
+    public static final int SDL_GAMEPAD_TYPE_GAMECUBE = 11;
+    public static final int SDL_GAMEPAD_TYPE_COUNT = 12;
 
     private SDL_GamepadType() {
     }
