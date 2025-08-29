@@ -13,16 +13,28 @@ import dev.isxander.sdl3java.jna.JnaEnum;
  */
 public final class SDL_GamepadAxis implements JnaEnum {
 
-    public static final int SDL_GAMEPAD_AXIS_INVALID  = -1;
-    public static final int SDL_GAMEPAD_AXIS_LEFTX = 0;
-    public static final int SDL_GAMEPAD_AXIS_LEFTY = 1;
-    public static final int SDL_GAMEPAD_AXIS_RIGHTX = 2;
-    public static final int SDL_GAMEPAD_AXIS_RIGHTY = 3;
-    public static final int SDL_GAMEPAD_AXIS_LEFT_TRIGGER = 4;
-    public static final int SDL_GAMEPAD_AXIS_RIGHT_TRIGGER = 5;
-    public static final int SDL_GAMEPAD_AXIS_MAX = 6;
+    public static final byte SDL_GAMEPAD_AXIS_INVALID  = -1;
+    public static final byte SDL_GAMEPAD_AXIS_LEFTX = 0;
+    public static final byte SDL_GAMEPAD_AXIS_LEFTY = 1;
+    public static final byte SDL_GAMEPAD_AXIS_RIGHTX = 2;
+    public static final byte SDL_GAMEPAD_AXIS_RIGHTY = 3;
+    public static final byte SDL_GAMEPAD_AXIS_LEFT_TRIGGER = 4;
+    public static final byte SDL_GAMEPAD_AXIS_RIGHT_TRIGGER = 5;
+    public static final byte SDL_GAMEPAD_AXIS_MAX = 6;
 
-    // TODO: Generate public static String toString(int value)
+    public static String toString(int value) {
+        return switch (value) {
+            case SDL_GAMEPAD_AXIS_INVALID -> "SDL_GAMEPAD_AXIS_INVALID";
+            case SDL_GAMEPAD_AXIS_LEFTX -> "SDL_GAMEPAD_AXIS_LEFTX";
+            case SDL_GAMEPAD_AXIS_LEFTY -> "SDL_GAMEPAD_AXIS_LEFTY";
+            case SDL_GAMEPAD_AXIS_RIGHTX -> "SDL_GAMEPAD_AXIS_RIGHTX";
+            case SDL_GAMEPAD_AXIS_RIGHTY -> "SDL_GAMEPAD_AXIS_RIGHTY";
+            case SDL_GAMEPAD_AXIS_LEFT_TRIGGER -> "SDL_GAMEPAD_AXIS_LEFT_TRIGGER";
+            case SDL_GAMEPAD_AXIS_RIGHT_TRIGGER -> "SDL_GAMEPAD_AXIS_RIGHT_TRIGGER";
+            case SDL_GAMEPAD_AXIS_MAX -> "SDL_GAMEPAD_AXIS_MAX";
+            default -> "Unknown Axis";
+        };
+    }
 
     private SDL_GamepadAxis() {
     }

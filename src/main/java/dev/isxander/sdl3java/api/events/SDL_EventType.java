@@ -75,7 +75,8 @@ public class SDL_EventType implements JnaEnum {
 
     // Joystick events
     public static final int SDL_EVENT_JOYSTICK_AXIS_MOTION = 0x600; // Joystick axis motion
-    public static final int SDL_EVENT_JOYSTICK_HAT_MOTION = 0x602; // Joystick hat position change
+    public static final int SDL_EVENT_JOYSTICK_BALL_MOTION = SDL_EVENT_JOYSTICK_AXIS_MOTION + 1; // Joystick trackball motion
+    public static final int SDL_EVENT_JOYSTICK_HAT_MOTION = SDL_EVENT_JOYSTICK_BALL_MOTION + 2; // Joystick hat position change
     public static final int SDL_EVENT_JOYSTICK_BUTTON_DOWN = SDL_EVENT_JOYSTICK_HAT_MOTION + 1; // Joystick button pressed
     public static final int SDL_EVENT_JOYSTICK_BUTTON_UP = SDL_EVENT_JOYSTICK_BUTTON_DOWN + 1; // Joystick button released
     public static final int SDL_EVENT_JOYSTICK_ADDED = SDL_EVENT_JOYSTICK_BUTTON_UP + 1; // A new joystick has been inserted into the system
